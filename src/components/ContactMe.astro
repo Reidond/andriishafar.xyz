@@ -1,0 +1,28 @@
+---
+import { Icon } from "astro-icon";
+
+export type ContactMeProps = {
+    text: string;
+    href: string;
+    iconName?: string;
+};
+
+export interface Props extends ContactMeProps {}
+
+const { href, iconName, text } = Astro.props;
+---
+
+<a
+    href={href}
+    class="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
+>
+    {iconName && <Icon name={iconName} />}
+    {text}
+</a>
+
+<style lang="css">
+    [astro-icon] {
+        @apply h-5 w-5 flex-none text-gray-400;
+        fill: currentColor;
+    }
+</style>
