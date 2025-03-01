@@ -1,0 +1,34 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+    "features": {
+        "./runtime": {
+            "port": "4321"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "22",
+            "nodeGypDependencies": true,
+            "pnpmVersion": "10.5.2"
+        },
+        "ghcr.io/joshuanianji/devcontainer-features/mount-pnpm-store:1": {}
+    },
+    "runArgs": [
+        "--name",
+        "${localWorkspaceFolderBasename}"
+    ],
+    "forwardPorts": [
+        4321
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "dbaeumer.vscode-eslint",
+                "EditorConfig.EditorConfig",
+                "esbenp.prettier-vscode",
+                "sdras.vue-vscode-snippets",
+                "bradlc.vscode-tailwindcss",
+                "astro-build.astro-vscode"
+            ]
+        }
+    }
+}

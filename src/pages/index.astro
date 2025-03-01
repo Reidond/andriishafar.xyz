@@ -1,55 +1,64 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
-import type { CardLinkProps } from "../components/CardLink.astro";
-import type { ContactMeProps } from "../components/ContactMe.astro";
 
-const links: CardLinkProps[] = [
+const links: { href: string; title: string }[] = [
     {
         href: "https://instagram.com/andriishafar",
         title: "Instagram",
-        iconName: "mdi:instagram",
     },
     {
-        href: "https://twitter.com/reidond69",
-        title: "Twitter",
-        iconName: "mdi:twitter",
+        href: "https://x.com/reidond69",
+        title: "X",
     },
     {
         href: "https://github.com/Reidond",
         title: "GitHub",
-        iconName: "mdi:github",
     },
     {
         href: "https://gitlab.com/Reidond",
         title: "GitLab",
-        iconName: "mdi:gitlab",
     },
 ];
 
-const contactLinks: ContactMeProps[] = [
+const contactLinks: { href: string; text: string }[] = [
     {
-        href: "mailto:andriishafar69@gmail.com",
-        text: "Personal Mail",
-        iconName: "mdi:email",
+        href: "mailto:andreyshafar@gmail.com",
+        text: "Personal",
     },
     {
-        href: "mailto:shafar.andrii@student.uzhnu.edu.ua",
-        text: "UzhNU Mail",
-        iconName: "mdi:email",
+        href: "mailto:andrii.shafar@uzhnu.edu.ua",
+        text: "UzhNU",
     },
 ];
 ---
 
-<Layout title="Welcome to My Personal Site!">
+<Layout title="Andrii Shafar">
     <main>
-        <h1>Welcome to <span class="text-gradient">My Personal Site!</span></h1>
-        <p class="instructions">
-            Here are all my social links and contact emails!
-        </p>
-        <div class="link-card-grid">
-            <Card links={links} contactLinks={contactLinks} />
-        </div>
+        <h1>Andrii Shafar</h1>
+        <p>Here are all my social links:</p>
+        <ul>
+            {
+                links.map((link) => (
+                    <li>
+                        <a href={link.href} target="_blank">
+                            {link.title}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+        <p>You can contact me via:</p>
+        <ul>
+            {
+                contactLinks.map((link) => (
+                    <li>
+                        <a href={link.href} target="_blank">
+                            {link.text}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
     </main>
 </Layout>
 
@@ -58,42 +67,5 @@ const contactLinks: ContactMeProps[] = [
         margin: auto;
         padding: 1.5rem;
         max-width: 60ch;
-    }
-    h1 {
-        font-size: 3rem;
-        font-weight: 800;
-        margin: 0;
-    }
-    .text-gradient {
-        background-image: var(--accent-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-size: 400%;
-        background-position: 0%;
-    }
-    .instructions {
-        line-height: 1.6;
-        margin: 1rem 0;
-        border: 1px solid rgba(var(--accent), 25%);
-        background-color: white;
-        padding: 1rem;
-        border-radius: 0.4rem;
-    }
-    .instructions code {
-        font-size: 0.875em;
-        font-weight: bold;
-        background: rgba(var(--accent), 12%);
-        color: rgb(var(--accent));
-        border-radius: 4px;
-        padding: 0.3em 0.45em;
-    }
-    .instructions strong {
-        color: rgb(var(--accent));
-    }
-    .link-card-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-        gap: 1rem;
-        padding: 0;
     }
 </style>

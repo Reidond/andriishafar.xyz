@@ -1,0 +1,15 @@
+{
+    "id": "runtime",
+    "version": "0.0.1",
+    "name": "runtime",
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ],
+    "options": {
+        "port": {
+            "type": "string",
+            "default": "8080",
+            "description": "Port to use for the container"
+        }
+    }
+}
