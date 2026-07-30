@@ -1,0 +1,11 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+
+supportedArchitectures:
+  os:
+    - current
+  cpu:
+    - x64
+    - arm64

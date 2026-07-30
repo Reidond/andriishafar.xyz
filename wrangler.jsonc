@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "andriishafar-site",
+  "compatibility_date": "2026-07-30",
+  "assets": {
+    "directory": "./dist"
+  },
+  "routes": [
+    {
+      "pattern": "andriishafar.xyz",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.andriishafar.xyz",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
