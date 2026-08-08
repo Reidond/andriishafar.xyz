@@ -1,0 +1,15 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.list span {
+  padding: 3px 6px;
+  border: 1px solid #c9ccd2;
+  color: #4d5666;
+  font-size: 7.1px;
+  line-height: 1;
+  text-transform: uppercase;
+}

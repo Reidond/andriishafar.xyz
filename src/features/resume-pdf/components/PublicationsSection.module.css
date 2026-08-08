@@ -1,0 +1,27 @@
+.publication {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 7px;
+  padding: 7px 0;
+  border-bottom: 1px solid #d5d7dc;
+  break-inside: avoid;
+}
+
+.publication > span {
+  color: #3157f6;
+  font-size: 7.8px;
+  font-weight: 700;
+}
+
+.publication h3 {
+  margin: 0;
+  font-size: 8.7px;
+  line-height: 1.35;
+}
+
+.publication p {
+  margin: 2px 0 0;
+  color: #646c79;
+  font-size: 7.2px;
+  line-height: 1.35;
+}

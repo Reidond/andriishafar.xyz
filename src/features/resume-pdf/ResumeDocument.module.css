@@ -1,0 +1,25 @@
+.document {
+  width: 100%;
+  margin: 0;
+  color: #172033;
+  font-family: sans-serif;
+  font-size: 10.2px;
+  line-height: 1.47;
+}
+
+.document,
+.document * {
+  box-sizing: border-box;
+}
+
+.document a {
+  color: #264ac7;
+  text-decoration: none;
+}
+
+.supportingGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 18px;
+}

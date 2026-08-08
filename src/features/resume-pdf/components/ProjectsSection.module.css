@@ -1,0 +1,57 @@
+.project {
+  padding: 8px 0;
+  border-bottom: 1px solid #d5d7dc;
+  break-inside: avoid;
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.heading h3 {
+  margin: 0;
+  font-size: 10px;
+}
+
+.heading span {
+  color: #6b7280;
+  font-size: 6.8px;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.project p {
+  margin: 3px 0 0;
+  color: #505a6b;
+  font-size: 8.2px;
+  line-height: 1.4;
+}
+
+.education {
+  margin-top: 8px;
+  padding: 9px 10px;
+  background: #f0eee8;
+  break-inside: avoid;
+}
+
+.education h3 {
+  margin: 0;
+  font-size: 10.5px;
+}
+
+.education strong {
+  display: block;
+  margin-top: 2px;
+  color: #3157f6;
+  font-size: 7.4px;
+  text-transform: uppercase;
+}
+
+.education p {
+  margin: 4px 0 0;
+  color: #505a6b;
+  font-size: 8.2px;
+}

@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "astro dev",
         "start": "astro dev",
-        "resume:pdf": "tsx scripts/generate-resume-pdf.tsx",
+        "resume:pdf": "vite build --config src/features/resume-pdf/vite.config.ts && node .resume-pdf/generate.mjs",
         "build": "pnpm resume:pdf && astro build",
         "deploy": "pnpm build && wrangler deploy -c wrangler.jsonc",
         "preview": "astro preview",
@@ -21,7 +21,7 @@
         "@types/react": "19.2.18",
         "react": "19.2.8",
         "takumi-pdf": "0.4.2",
-        "tsx": "4.23.11",
+        "vite": "6.2.0",
         "wrangler": "^4.115.0"
     }
 }

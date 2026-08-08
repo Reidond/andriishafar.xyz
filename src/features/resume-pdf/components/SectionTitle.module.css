@@ -1,0 +1,23 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #b9bec8;
+  break-after: avoid;
+}
+
+.root h2 {
+  margin: 0;
+  color: #101822;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.root span {
+  color: #6d7481;
+  font-size: 7.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

@@ -1,0 +1,24 @@
+.section {
+  margin-top: 18px;
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+  margin-top: 9px;
+}
+
+.socialLink {
+  font-size: 7.5px;
+}
+
+.audit {
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-left: 3px solid #3157f6;
+  background: #f6f5f1;
+  color: #596273;
+  font-size: 7.4px;
+  line-height: 1.45;
+}
