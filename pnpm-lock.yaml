@@ -21,6 +21,9 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9
     devDependencies:
+      takumi-pdf:
+        specifier: 0.4.2
+        version: 0.4.2
       wrangler:
         specifier: ^4.115.0
         version: 4.115.0
@@ -959,6 +962,18 @@ packages:
     resolution: {integrity: sha512-BIKJO+hwdIsN7V6I7SziMZIVHWWMsV/uCQKYEbeiGRDRld+TkqyRRl9+dQ0MCXbhcVr+D9T/qX2E84kT7V281g==}
     peerDependencies:
       vite: ^5.2.0 || ^6
+
+  '@takumi-rs/helpers@2.5.11':
+    resolution: {integrity: sha512-J6Fl3QMDfV/zKdiTUzJ16VJSUX778imyoVkU90uoqe0Fc9lK1/DVCmTpXq87jTjnkokAb9w2Y1hCT1XnyxqnAg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      preact: ^10.0.0
+      react: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      preact:
+        optional: true
+      react:
+        optional: true
 
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
@@ -2123,6 +2138,15 @@ packages:
   tailwindcss@4.0.9:
     resolution: {integrity: sha512-12laZu+fv1ONDRoNR9ipTOpUD7RN9essRVkX36sjxuRUInpN7hIiHN4lBd/SIFjbISvnXzp8h/hXzmU8SQQYhw==}
 
+  takumi-pdf@0.4.2:
+    resolution: {integrity: sha512-uRb/W/j/+hSzyVHiuy9xypyvITOZMgXxYDS0fkiqGYCYE5LWJIuIcLQay7WOHbcbIFiU7V/Uv03VPd7qfZEitw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
@@ -3110,6 +3134,8 @@ snapshots:
       lightningcss: 1.29.1
       tailwindcss: 4.0.9
       vite: 6.2.0(@types/node@22.13.8)(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.7.0)
+
+  '@takumi-rs/helpers@2.5.11': {}
 
   '@trysound/sax@0.2.0': {}
 
@@ -4726,6 +4752,12 @@ snapshots:
       picocolors: 1.1.1
 
   tailwindcss@4.0.9: {}
+
+  takumi-pdf@0.4.2:
+    dependencies:
+      '@takumi-rs/helpers': 2.5.11
+    transitivePeerDependencies:
+      - preact
 
   tapable@2.2.1: {}
 

@@ -12,6 +12,7 @@
   --line: rgba(17, 24, 39, 0.16);
   --acid: #d7ff4f;
   --cobalt: #3157f6;
+  --cobalt-text: #2949d1;
 }
 
 * {
@@ -318,6 +319,7 @@ a {
 }
 
 .statement h2,
+.experience-heading h2,
 .section-heading h2,
 .research-lead h2,
 .connect-main h2 {
@@ -368,6 +370,154 @@ a {
 .capability-list b {
   color: var(--cobalt);
   font: 500 0.6rem/1 var(--font-geist-mono), monospace;
+}
+
+.experience {
+  background: #e8e4da;
+  border-top: 1px solid var(--line);
+}
+
+.experience-heading {
+  display: grid;
+  grid-template-columns: 1fr minmax(320px, 0.62fr);
+  gap: 7vw;
+  align-items: end;
+}
+
+.experience-heading h2 {
+  max-width: 830px;
+}
+
+.audit-note {
+  padding: 0.2rem 0 0.2rem 1.5rem;
+  border-left: 3px solid var(--cobalt);
+}
+
+.audit-note p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.audit-note span {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--cobalt-text);
+  font: 600 0.62rem/1.55 var(--font-geist-mono), monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.experience-list {
+  margin-top: clamp(4rem, 7vw, 7rem);
+  border-top: 1px solid var(--line);
+}
+
+.experience-item {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.24fr) minmax(0, 1fr);
+  gap: 4vw;
+  border-bottom: 1px solid var(--line);
+}
+
+.experience-meta {
+  padding: 2.7rem 1rem 2.7rem 0;
+  border-right: 1px solid var(--line);
+}
+
+.experience-meta span {
+  display: block;
+  color: var(--cobalt-text);
+  font: 600 0.72rem/1 var(--font-geist-mono), monospace;
+}
+
+.experience-meta p {
+  margin: 1rem 0 0;
+  color: var(--ink-soft);
+  font: 600 0.68rem/1.45 var(--font-geist-mono), monospace;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.experience-content {
+  padding: 2.5rem 0 3rem;
+}
+
+.experience-content header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.experience-content h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.5rem, 4vw, 4.7rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  font-weight: 400;
+}
+
+.experience-content header p {
+  margin: 0;
+  color: var(--cobalt-text);
+  font: 600 0.68rem/1.45 var(--font-geist-mono), monospace;
+  letter-spacing: 0.07em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.experience-summary {
+  max-width: 900px;
+  margin: 1.5rem 0 2rem;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.experience-content ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 2.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.experience-content li {
+  position: relative;
+  padding-left: 1.2rem;
+  color: #303844;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.experience-content li::before {
+  content: "";
+  position: absolute;
+  top: 0.68rem;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--cobalt);
+}
+
+.experience-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 2rem;
+}
+
+.experience-tech span {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  background: rgba(250, 249, 245, 0.45);
+  font: 600 0.6rem/1 var(--font-geist-mono), monospace;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
 }
 
 .work {
@@ -536,7 +686,7 @@ a {
 .connect-main > p {
   max-width: 580px;
   margin: 0;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 1.08rem;
   line-height: 1.75;
 }
@@ -597,7 +747,7 @@ a {
   overflow-wrap: anywhere;
   font-size: 0.78rem;
   font-weight: 500;
-  opacity: 0.75;
+  opacity: 0.92;
 }
 
 .social-grid b {
@@ -613,7 +763,7 @@ footer {
   font: 500 0.62rem/1.4 var(--font-geist-mono), monospace;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 footer a {
@@ -696,6 +846,7 @@ footer a {
   }
 
   .statement-grid,
+  .experience-heading,
   .section-heading,
   .research,
   .connect-main {
@@ -704,6 +855,38 @@ footer a {
 
   .statement-copy {
     margin-top: 2rem;
+  }
+
+  .experience-item {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .experience-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 2rem 0 0;
+    border-right: 0;
+  }
+
+  .experience-meta p {
+    margin: 0;
+  }
+
+  .experience-content header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .experience-content header p {
+    text-align: left;
+  }
+
+  .experience-content ul {
+    grid-template-columns: 1fr;
   }
 
   .capability-list {

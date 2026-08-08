@@ -1,0 +1,209 @@
+{
+  "profile": {
+    "name": "Andrii Shafar",
+    "headline": "Software Engineer & Applied Researcher",
+    "location": "Ukraine",
+    "email": "andreyshafar@gmail.com",
+    "academicEmail": "andrii.shafar@uzhnu.edu.ua",
+    "website": "https://andriishafar.xyz",
+    "summary": "Product-minded software engineer with six years of evidence-backed work spanning fundraising technology, realtime AI interviewing, mental-health research platforms, cloud infrastructure, developer tooling, and applied research. Comfortable moving from public interfaces and payment flows to backend services, data pipelines, multi-tenant authorization, and delivery systems."
+  },
+  "audit": {
+    "summary": "This professional history was reconstructed from 8,539 authored, non-merge commit objects across 20 local repositories. Merge commits and a different contributor with a similar name were excluded.",
+    "note": "Dates describe the available authored-commit evidence, not formal employment records."
+  },
+  "metrics": [
+    {
+      "value": "6+",
+      "label": "years shipping production product systems"
+    },
+    {
+      "value": "8.5k+",
+      "label": "authored commits reviewed for this resume"
+    },
+    {
+      "value": "4",
+      "label": "selected peer-reviewed publications"
+    }
+  ],
+  "capabilities": [
+    "Product engineering",
+    "Distributed backend systems",
+    "Frontend architecture",
+    "TypeScript & JavaScript",
+    "Python",
+    "Go",
+    "Payments & compliance",
+    "AI & realtime systems",
+    "Data pipelines",
+    "Cloud infrastructure",
+    "Developer tooling",
+    "Research engineering"
+  ],
+  "experience": [
+    {
+      "company": "Charidy",
+      "period": "2020 - Present",
+      "scope": "Fundraising platform engineering",
+      "summary": "Six years of full-stack product work across nine services and applications, from donor-facing campaign and checkout flows to backend services, operations tooling, integrations, and AI-assisted workflows.",
+      "highlights": [
+        "Built and evolved a component-driven fundraising platform across Nuxt generations and a skin-based Vue 3 checkout with reusable multi-step flows, attribution, localization, and build-time gateway composition.",
+        "Integrated and hardened Stripe wallets and 3DS, PayPal, PayArc, Cardknox card and ACH, raffle preauthorization, and configurable international tax-compliance and receipt workflows.",
+        "Delivered campaign, team, and donation operations with contact management, secure analytics, custom reports, streaming exports, and queued campaign-total aggregation.",
+        "Built email and SMS outreach with reusable audiences, templates, drafts, asynchronous delivery, provider callbacks, audience safeguards, and operational health diagnostics.",
+        "Implemented peer matching, team nominations, auctions, raffle registration, prize wheels, projector and live-feed experiences, with server-side eligibility and inventory protections.",
+        "Designed OAuth-protected AI and MCP integrations plus HubSpot CRM automation with typed tools, approval-gated actions, setup reconciliation, entity linking, and guarded bulk operations."
+      ],
+      "technologies": [
+        "Go",
+        "Vue & Nuxt",
+        "TypeScript",
+        "Payments",
+        "AWS & queues",
+        "CRM & messaging"
+      ]
+    },
+    {
+      "company": "Lemmi",
+      "period": "2026",
+      "scope": "AI interviewing and platform engineering",
+      "summary": "Backend, frontend, and developer-platform work for realtime voice interviewing, durable background processing, speech-to-text, production operations, and reusable AI engineering workflows.",
+      "highlights": [
+        "Designed an owner-scoped background-job platform with durable state and event delivery, registry-based dispatch, frontend integration, admission control, and cross-user authorization safeguards.",
+        "Built configurable realtime and batch speech-to-text pipelines and improved voice interviews with echo suppression, resilient WebSocket reconnects, and buffered-audio recovery.",
+        "Refactored realtime interview and voice-test sessions onto shared event, action, runtime-state, and ordered-shutdown primitives to reduce coupling across workflows.",
+        "Delivered full-stack automated interview testing with generated speech, PCM injection, lifecycle controls, local and cloud recording storage, and diagnostic exports.",
+        "Modernized the Python platform around uv, Ruff, basedpyright, Alembic, and honest CI gates; added structured crash visibility and hardened authorization and validation boundaries.",
+        "Created a reusable AI-engineering toolkit with orchestration and review workflows, automated installation, typed Python APIs, and Claude Code and Codex plugin packaging."
+      ],
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "Angular",
+        "Realtime audio",
+        "WebSockets",
+        "PostgreSQL"
+      ]
+    },
+    {
+      "company": "SapienLabs",
+      "period": "2026 - Present",
+      "scope": "Research platforms, reporting, and cloud delivery",
+      "summary": "Cross-stack engineering for survey research, mental-health scoring, multi-tenant reporting, machine-to-machine exports, guided workforce journeys, and AWS delivery infrastructure.",
+      "highlights": [
+        "Re-architected a Python reporting application into a typed uv monorepo with a separated API, generated client, modern React frontend, migration-managed PostgreSQL and RBAC, and containerized delivery.",
+        "Designed and hardened AWS CDK infrastructure using managed containers and PostgreSQL, HTTPS edge delivery, keyless CI authentication, conditional rollouts, and workload-aware cost controls.",
+        "Built secure multi-tenant identity and administration spanning sessions, password recovery, organizations, teams, invitations, self-service workspace creation, and revision-level authorization.",
+        "Implemented role-scoped reporting and external survey synchronization with encrypted organization credentials, operational sync monitoring, curated trends, and live TeamQ and OrgQ journeys.",
+        "Expanded the MHQ survey and research platform with lifecycle controls, accurate drop-off analytics, mobile interaction safeguards, an embeddable Web Component, and an invite-only CSV Research Calculator.",
+        "Delivered machine-to-machine survey exports and a service-account console with scoped access, one-time credentials, token rotation, stable historical revision identity, deterministic CSV contracts, and pagination."
+      ],
+      "technologies": [
+        "Go",
+        "React & Next.js",
+        "Python & uv",
+        "AWS CDK",
+        "PostgreSQL",
+        "BigQuery & S3"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "index": "01",
+      "name": "Tourism Risk Platform",
+      "description": "An intelligent analytical system for evaluating travel-safety risk across individual, regional, and national levels.",
+      "stack": "Python - Fuzzy systems - Decision support",
+      "href": "https://github.com/Reidond/travel-risk-platform"
+    },
+    {
+      "index": "02",
+      "name": "Stavka",
+      "description": "An LLM-powered strategic orchestration layer that drives a dynamic AI opponent inside Arma Reforger.",
+      "stack": "TypeScript - LLM agents - Game systems",
+      "href": "https://reforger.armaplatform.com/workshop/68B1A0F0C0DE0001"
+    },
+    {
+      "index": "03",
+      "name": "bwssh",
+      "description": "A Bitwarden-backed SSH agent built to keep key access convenient without loosening the security model.",
+      "stack": "Python - SSH - Security tooling",
+      "href": "https://pypi.org/project/bwssh/"
+    },
+    {
+      "index": "04",
+      "name": "Open-source tools",
+      "description": "Developer utilities and experiments spanning terminal themes, Vue components, editor tooling, Rust, Go, and native apps.",
+      "stack": "115 public repositories - GitHub since 2016",
+      "href": "https://github.com/Reidond?tab=repositories"
+    }
+  ],
+  "education": {
+    "institution": "Uzhhorod National University",
+    "role": "Postgraduate researcher and teaching support",
+    "description": "Applied AI, fuzzy models, and decision-support systems for tourism in the Department of Software Systems."
+  },
+  "publications": [
+    {
+      "year": "2025",
+      "title": "Intellectual-analytical platform for assessing the security risk of tourist travel",
+      "journal": "Scientific Journal of the Ternopil National Technical University, 120(4)",
+      "href": "https://doi.org/10.33108/visnyk_tntu2025.04.078"
+    },
+    {
+      "year": "2025",
+      "title": "Model of expert assessment of the level of influence of human resources on tourist satisfaction with the destination",
+      "journal": "Herald of Khmelnytskyi National University. Technical Sciences, 349(2)",
+      "href": "https://doi.org/10.31891/2307-5732-2025-349-69"
+    },
+    {
+      "year": "2024",
+      "title": "A neuro-fuzzy model for destination evaluation and choice taking into account the target needs of the tourist",
+      "journal": "Computer Science and Applied Mathematics",
+      "href": "https://doi.org/10.26661/2786-6254-2024-2-02"
+    },
+    {
+      "year": "2024",
+      "title": "Informational and analytical model for assessing the level of tourist satisfaction with accommodation facilities",
+      "journal": "Management of Development of Complex Systems, 57",
+      "href": "https://doi.org/10.32347/2412-9933.2024.57.164-173"
+    }
+  ],
+  "socialLinks": [
+    {
+      "label": "GitHub",
+      "handle": "@Reidond",
+      "href": "https://github.com/Reidond"
+    },
+    {
+      "label": "GitLab",
+      "handle": "@Reidond",
+      "href": "https://gitlab.com/Reidond"
+    },
+    {
+      "label": "ORCID",
+      "handle": "0009-0004-2445-8232",
+      "href": "https://orcid.org/0009-0004-2445-8232"
+    },
+    {
+      "label": "Bluesky",
+      "handle": "@andriishafar.xyz",
+      "href": "https://bsky.app/profile/andriishafar.xyz"
+    },
+    {
+      "label": "X",
+      "handle": "@reidond69",
+      "href": "https://x.com/reidond69"
+    },
+    {
+      "label": "Instagram",
+      "handle": "@andriishafar",
+      "href": "https://instagram.com/andriishafar"
+    },
+    {
+      "label": "PyPI",
+      "handle": "andriishafar",
+      "href": "https://pypi.org/user/andriishafar/"
+    }
+  ]
+}
