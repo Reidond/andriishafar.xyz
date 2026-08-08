@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "astro dev",
         "start": "astro dev",
-        "resume:pdf": "node scripts/generate-resume-pdf.mjs",
+        "resume:pdf": "tsx scripts/generate-resume-pdf.tsx",
         "build": "pnpm resume:pdf && astro build",
         "deploy": "pnpm build && wrangler deploy -c wrangler.jsonc",
         "preview": "astro preview",
@@ -18,7 +18,10 @@
         "tailwindcss": "^4.0.9"
     },
     "devDependencies": {
+        "@types/react": "19.2.18",
+        "react": "19.2.8",
         "takumi-pdf": "0.4.2",
+        "tsx": "4.23.11",
         "wrangler": "^4.115.0"
     }
 }

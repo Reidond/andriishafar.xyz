@@ -2,7 +2,7 @@
 
 Professional resume and portfolio for Andrii Shafar.
 
-The website and downloadable PDF use the same structured content in `src/data/resume.json`. The PDF is rendered with [takumi-pdf](https://takumi.kane.tw/docs/pdf) and published as a static site asset.
+The website and downloadable PDF use the same structured content in `src/data/resume.json`. The PDF is composed as React/TSX components, rendered with [takumi-pdf](https://takumi.kane.tw/docs/pdf), and published as a static site asset.
 
 ## Development
 

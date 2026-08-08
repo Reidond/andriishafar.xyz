@@ -53,19 +53,29 @@ a {
 }
 
 .wordmark {
-  width: 45px;
-  height: 45px;
-  display: grid;
-  place-items: center;
-  background: var(--ink);
-  color: white;
-  border-radius: 50%;
-  font: 700 14px/1 var(--font-geist-mono), monospace;
-  letter-spacing: -0.06em;
+  min-height: 45px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.72rem;
+  color: var(--ink);
+  font: 700 0.68rem/1 var(--font-geist-mono), monospace;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.wordmark-dot {
-  color: var(--acid);
+.wordmark-mark {
+  width: 9px;
+  height: 31px;
+  display: block;
+  background: var(--cobalt);
+  transform: skew(-14deg);
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+
+.wordmark:hover .wordmark-mark {
+  transform: skew(-14deg) translateY(-2px);
 }
 
 .nav-links {
