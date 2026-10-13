@@ -1,0 +1,780 @@
+---
+import resume from "../../data/resume.json";
+
+const { profile, projects, publications, socialLinks } = resume;
+
+const work = [
+  { name: "Charidy", role: "Fundraising platform", years: "2020 – now" },
+  { name: "SapienLabs", role: "Research platforms", years: "2026 – now" },
+  { name: "Lemmi", role: "AI interviewing", years: "2026" },
+  { name: "Uzhhorod National University", role: "Postgraduate research", years: "" },
+];
+
+const projectLines: Record<string, string> = {
+  "Tourism Risk Platform": "Travel-safety risk analysis",
+  Stavka: "LLM opponent for Arma Reforger",
+  bwssh: "Bitwarden-backed SSH agent",
+  "Open-source tools": "Themes, components, CLIs",
+};
+
+const links = socialLinks.filter((link) => ["GitHub", "Bluesky", "X", "ORCID"].includes(link.label));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1537f0" />
+    <title>Andrii Shafar</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%231537f0'/%3E%3Ccircle cx='8' cy='8' r='3' fill='white'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Space+Grotesk:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="bar">
+      <a class="bar-name" href="#top">AS</a>
+      <nav>
+        <a href={`mailto:${profile.email}`}>Email</a>
+        <a href="https://github.com/Reidond" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="/andrii-shafar-resume.pdf" download>Résumé</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-text">
+          <h1>
+            <span class="line"><span>Andrii</span></span>
+            <span class="line"><span>Shafar</span></span>
+          </h1>
+          <p class="lede">Software engineer and applied researcher, Ukraine.</p>
+        </div>
+
+        <figure class="portrait">
+          <canvas data-halftone aria-label="Halftone portrait of Andrii Shafar" role="img"></canvas>
+          <figcaption>
+            <span data-readout>x 000 · y 000</span>
+            <span>Fig. 1</span>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="index">
+        <div class="group">
+          <h2>Work</h2>
+          <ul>
+            {work.map((item) => (
+              <li class="row">
+                <span class="row-main">{item.name}</span>
+                <span class="row-sub">{item.role}</span>
+                <span class="row-end">{item.years}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="group">
+          <h2>Projects</h2>
+          <ul>
+            {projects.map((project) => (
+              <li>
+                <a class="row" href={project.href} target="_blank" rel="noreferrer">
+                  <span class="row-main">{project.name}</span>
+                  <span class="row-sub">{projectLines[project.name]}</span>
+                  <span class="row-end" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" width="16" height="16"><path d="M5 11 11 5M6 5h5v5" /></svg>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="group">
+          <h2>Papers</h2>
+          <ul>
+            {publications.map((paper) => (
+              <li>
+                <a class="row row-paper" href={paper.href} target="_blank" rel="noreferrer">
+                  <span class="row-main">{paper.title}</span>
+                  <span class="row-end">{paper.year}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="group">
+          <h2>Contact</h2>
+          <div class="contact">
+            <button class="email" type="button" data-copy={profile.email}>
+              <span>{profile.email}</span>
+              <span class="email-icon" aria-hidden="true">
+                <svg class="icon-copy" viewBox="0 0 16 16" width="16" height="16">
+                  <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+                  <path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" />
+                </svg>
+                <svg class="icon-check" viewBox="0 0 16 16" width="16" height="16"><path d="m3.5 8.5 3 3 6-7" /></svg>
+              </span>
+            </button>
+            <span class="sr-only" aria-live="polite" data-status></span>
+            <div class="links">
+              {links.map((link) => (
+                <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <style is:global>
+      :root {
+        --blue: #1537f0;
+        --white: #fff;
+        --dim: rgb(255 255 255 / 0.72);
+        --rule: rgb(255 255 255 / 0.16);
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+        --sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+        --mono: "IBM Plex Mono", ui-monospace, monospace;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--blue);
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--white);
+        font: 400 16px/1.5 var(--sans);
+        -webkit-font-smoothing: antialiased;
+        background-color: var(--blue);
+        background-image:
+          linear-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(255 255 255 / 0.07) 1px, transparent 1px),
+          linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+        background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+        background-position: -1px -1px;
+      }
+
+      ::selection {
+        background: var(--white);
+        color: var(--blue);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--white);
+        outline-offset: 3px;
+        border-radius: 2px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
+      /* Bar */
+      .bar {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 32px;
+      }
+
+      .bar-name {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+      }
+
+      .bar nav {
+        display: flex;
+        gap: 4px;
+      }
+
+      .bar nav a {
+        display: inline-flex;
+        align-items: center;
+        height: 40px;
+        padding: 0 12px;
+        color: var(--dim);
+        transition-property: color;
+        transition-duration: 120ms;
+      }
+
+      /* Hero */
+      .hero {
+        min-height: 100svh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 48px;
+        padding: 96px 32px 64px;
+        max-width: 1440px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(64px, 10.5vw, 168px);
+        font-weight: 500;
+        line-height: 0.86;
+        letter-spacing: -0.055em;
+      }
+
+      .line {
+        display: block;
+        overflow: clip;
+        overflow-clip-margin: 0.1em;
+        padding-bottom: 0.04em;
+      }
+
+      .line > span {
+        display: block;
+        animation: rise 900ms var(--ease-out) both;
+      }
+
+      .line:nth-child(2) > span {
+        animation-delay: 100ms;
+      }
+
+      .lede {
+        margin: 32px 0 0;
+        max-width: 28ch;
+        color: var(--dim);
+        font-size: clamp(18px, 1.6vw, 22px);
+        line-height: 1.4;
+        text-wrap: balance;
+        animation: fade 700ms var(--ease-out) 250ms both;
+      }
+
+      .portrait {
+        margin: 0;
+        justify-self: end;
+        width: min(100%, 640px, 74svh);
+      }
+
+      .portrait canvas {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        touch-action: pan-y;
+        cursor: crosshair;
+      }
+
+      .portrait figcaption {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 12px;
+        color: var(--dim);
+        font: 400 12px/1.4 var(--mono);
+        font-variant-numeric: tabular-nums;
+        animation: fade 700ms var(--ease-out) 600ms both;
+      }
+
+      /* Index */
+      .index {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 64px 32px 160px;
+        display: grid;
+        gap: 96px;
+      }
+
+      .group {
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+        gap: 32px;
+      }
+
+      h2 {
+        margin: 0;
+        padding-top: 14px;
+        color: var(--dim);
+        font-size: 14px;
+        font-weight: 400;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-top: 1px solid var(--rule);
+      }
+
+      li {
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) 96px;
+        align-items: baseline;
+        gap: 24px;
+        padding: 14px 0;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+      }
+
+      .row-paper {
+        grid-template-columns: minmax(0, 9fr) 96px;
+        font-size: 17px;
+        line-height: 1.4;
+      }
+
+      .row-main {
+        text-wrap: pretty;
+      }
+
+      .row-sub {
+        color: var(--dim);
+        font-size: 16px;
+      }
+
+      .row-end {
+        justify-self: end;
+        color: var(--dim);
+        font: 400 13px/1 var(--mono);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .row svg {
+        display: block;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition-property: transform;
+        transition-duration: 150ms;
+        transition-timing-function: var(--ease-out);
+      }
+
+      a.row {
+        transition-property: color;
+        transition-duration: 120ms;
+      }
+
+      .contact {
+        display: grid;
+        gap: 24px;
+        padding-top: 14px;
+      }
+
+      .email {
+        justify-self: start;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 48px;
+        margin: -4px 0 0 -16px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--white);
+        font: 500 clamp(22px, 2.6vw, 36px) / 1.1 var(--sans);
+        letter-spacing: -0.03em;
+        cursor: pointer;
+        transition-property: background-color, transform;
+        transition-duration: 120ms, 160ms;
+        transition-timing-function: ease, var(--ease-out);
+      }
+
+      .email:active {
+        transform: scale(0.96);
+      }
+
+      .email-icon {
+        position: relative;
+        width: 20px;
+        height: 20px;
+        color: var(--dim);
+      }
+
+      .email-icon svg {
+        position: absolute;
+        inset: 0;
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition-property: opacity, scale, filter;
+        transition-duration: 200ms;
+        transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+      }
+
+      .icon-check {
+        opacity: 0;
+        scale: 0.25;
+        filter: blur(4px);
+      }
+
+      .email[data-copied] .icon-copy {
+        opacity: 0;
+        scale: 0.25;
+        filter: blur(4px);
+      }
+
+      .email[data-copied] .icon-check {
+        opacity: 1;
+        scale: 1;
+        filter: blur(0);
+        color: var(--white);
+      }
+
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 24px;
+        font-size: 16px;
+      }
+
+      .links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+        color: var(--dim);
+        transition-property: color;
+        transition-duration: 120ms;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .bar nav a:hover,
+        .links a:hover {
+          color: var(--white);
+        }
+
+        ul:has(a.row:hover) a.row:not(:hover) {
+          color: var(--dim);
+        }
+
+        a.row:hover svg {
+          transform: translate(2px, -2px);
+        }
+
+        .email:hover {
+          background: rgb(255 255 255 / 0.08);
+        }
+      }
+
+      @keyframes rise {
+        from {
+          transform: translateY(105%);
+        }
+      }
+
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+
+      @media (max-width: 860px) {
+        .bar {
+          padding: 8px 12px;
+        }
+
+        .hero {
+          min-height: 0;
+          grid-template-columns: 1fr;
+          gap: 40px;
+          padding: 112px 20px 32px;
+        }
+
+        h1 {
+          font-size: clamp(64px, 24vw, 128px);
+        }
+
+        .lede {
+          margin-top: 20px;
+        }
+
+        .portrait {
+          justify-self: stretch;
+          width: 100%;
+        }
+
+        .portrait figcaption span:last-child {
+          display: none;
+        }
+
+        .index {
+          padding: 48px 20px 96px;
+          gap: 64px;
+        }
+
+        .group {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        h2 {
+          padding-top: 0;
+        }
+
+        .row {
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 4px 16px;
+          font-size: 18px;
+        }
+
+        .row-sub {
+          grid-row: 2;
+          font-size: 15px;
+        }
+
+        .row-paper {
+          font-size: 16px;
+        }
+
+        .email {
+          margin-left: -12px;
+          padding: 0 12px;
+          font-size: 22px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .line > span {
+          animation: none;
+        }
+
+        .lede,
+        .portrait figcaption {
+          animation-name: fade-only;
+        }
+
+        @keyframes fade-only {
+          from {
+            opacity: 0;
+          }
+        }
+      }
+    </style>
+
+    <script>
+      const canvas = document.querySelector<HTMLCanvasElement>("[data-halftone]")!;
+      const readout = document.querySelector<HTMLElement>("[data-readout]")!;
+      const ctx = canvas.getContext("2d")!;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      type Dot = { x: number; y: number; r: number; delay: number };
+
+      let dots: Dot[] = [];
+      let width = 0;
+      let height = 0;
+      let spacing = 9;
+      let frame = 0;
+      let start = 0;
+      let visible = true;
+
+      const pointer = { x: 0, y: 0, tx: 0, ty: 0, strength: 0, target: 0 };
+      const REVEAL = 1100;
+      const RADIUS = 120;
+
+      const image = new Image();
+      image.src = "/andrii-shafar.jpg";
+
+      function smoothstep(from: number, to: number, value: number) {
+        const t = Math.min(1, Math.max(0, (value - from) / (to - from)));
+        return t * t * (3 - 2 * t);
+      }
+
+      function build() {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !image.complete) return;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = rect.width;
+        height = rect.height;
+        spacing = width < 480 ? 7 : 9;
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const rowStep = spacing * 0.866;
+        const cols = Math.ceil(width / spacing) + 1;
+        const rows = Math.ceil(height / rowStep) + 1;
+        const sample = document.createElement("canvas");
+        sample.width = cols;
+        sample.height = rows;
+        const sctx = sample.getContext("2d", { willReadFrequently: true })!;
+        const crop = image.naturalWidth * 0.84;
+        sctx.drawImage(image, image.naturalWidth * 0.12, image.naturalHeight * 0.08, crop, crop, 0, 0, cols, rows);
+        const pixels = sctx.getImageData(0, 0, cols, rows).data;
+
+        dots = [];
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
+            const i = (row * cols + col) * 4;
+            const luminance = (0.299 * pixels[i] + 0.587 * pixels[i + 1] + 0.114 * pixels[i + 2]) / 255;
+            const x = col * spacing + (row % 2 ? spacing / 2 : 0);
+            const y = row * rowStep;
+            const ex = Math.abs(x / width - 0.5) / 0.5;
+            const ey = Math.abs(y / height - 0.5) / 0.5;
+            const edge = Math.pow(ex ** 4 + ey ** 4, 0.25);
+            const vignette = 1 - smoothstep(0.72, 1, edge);
+            const tone = Math.min(1, Math.max(0, (luminance - 0.5) * 1.45 + 0.5)) * vignette;
+            dots.push({
+              x,
+              y,
+              r: spacing * 0.54 * Math.pow(tone, 1.1),
+              delay: ((x + y) / (width + height)) * 700,
+            });
+          }
+        }
+      }
+
+      function draw(now: number) {
+        const elapsed = reduceMotion ? REVEAL + 700 : now - start;
+
+        pointer.x += (pointer.tx - pointer.x) * 0.18;
+        pointer.y += (pointer.ty - pointer.y) * 0.18;
+        pointer.strength += (pointer.target - pointer.strength) * 0.12;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+
+        for (const dot of dots) {
+          const progress = Math.min(1, Math.max(0, (elapsed - dot.delay) / 500));
+          if (progress === 0) continue;
+          const eased = 1 - Math.pow(1 - progress, 3);
+
+          let x = dot.x;
+          let y = dot.y;
+          let r = dot.r * (0.3 + 0.7 * eased);
+
+          if (pointer.strength > 0.001) {
+            const dx = x - pointer.x;
+            const dy = y - pointer.y;
+            const distance = Math.hypot(dx, dy);
+            if (distance < RADIUS) {
+              const t = 1 - distance / RADIUS;
+              const falloff = t * t * (3 - 2 * t) * pointer.strength;
+              if (distance > 0.01) {
+                x += (dx / distance) * falloff * 22;
+                y += (dy / distance) * falloff * 22;
+              }
+              r *= 1 - falloff * 0.35;
+            }
+          }
+
+          if (r < 0.25) continue;
+          ctx.moveTo(x + r, y);
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+        }
+
+        ctx.fill();
+
+        if (pointer.strength > 0.02) {
+          ctx.globalAlpha = 0.35 * pointer.strength;
+          ctx.fillRect(0, Math.round(pointer.y), width, 1);
+          ctx.fillRect(Math.round(pointer.x), 0, 1, height);
+          ctx.globalAlpha = 1;
+        }
+
+        const settling =
+          elapsed < REVEAL + 700 ||
+          Math.abs(pointer.strength - pointer.target) > 0.002 ||
+          Math.hypot(pointer.tx - pointer.x, pointer.ty - pointer.y) > 0.2;
+
+        frame = settling && visible ? requestAnimationFrame(draw) : 0;
+      }
+
+      function wake() {
+        if (!frame && visible) frame = requestAnimationFrame(draw);
+      }
+
+      function setPointer(event: PointerEvent) {
+        const rect = canvas.getBoundingClientRect();
+        pointer.tx = event.clientX - rect.left;
+        pointer.ty = event.clientY - rect.top;
+        if (pointer.target === 0) {
+          pointer.x = pointer.tx;
+          pointer.y = pointer.ty;
+        }
+        pointer.target = reduceMotion ? 0 : 1;
+        const px = Math.round((pointer.tx / rect.width) * 460);
+        const py = Math.round((pointer.ty / rect.height) * 460);
+        readout.textContent = `x ${String(px).padStart(3, "0")} · y ${String(py).padStart(3, "0")}`;
+        wake();
+      }
+
+      canvas.addEventListener("pointermove", setPointer);
+      canvas.addEventListener("pointerdown", setPointer);
+      canvas.addEventListener("pointerleave", () => {
+        pointer.target = 0;
+        wake();
+      });
+      canvas.addEventListener("pointercancel", () => {
+        pointer.target = 0;
+        wake();
+      });
+
+      new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) wake();
+      }).observe(canvas);
+
+      new ResizeObserver(() => {
+        build();
+        wake();
+      }).observe(canvas);
+
+      image.decode().then(() => {
+        build();
+        start = performance.now();
+        wake();
+      });
+
+      const email = document.querySelector<HTMLButtonElement>("[data-copy]")!;
+      const status = document.querySelector<HTMLElement>("[data-status]")!;
+      let reset = 0;
+
+      email.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(email.dataset.copy!);
+        email.setAttribute("data-copied", "");
+        status.textContent = "Email copied";
+        clearTimeout(reset);
+        reset = window.setTimeout(() => {
+          email.removeAttribute("data-copied");
+          status.textContent = "";
+        }, 1600);
+      });
+    </script>
+  </body>
+</html>
