@@ -6,37 +6,18 @@ const { profile, experience, education, projects, publications, socialLinks } = 
 
 const formatPeriod = (period: string) => period.replace(/\s*-\s*Present$/, " – now");
 
-type Job = {
-  name: string;
-  tagline: string;
-  years: string;
-  summary: string;
-  highlights: string[];
-  technologies: string[];
-};
+const jobs = [...experience]
+  .sort((a, b) => Number(b.period.endsWith("Present")) - Number(a.period.endsWith("Present")))
+  .map((item) => ({
+    name: item.company,
+    tagline: item.tagline,
+    years: formatPeriod(item.period),
+    summary: item.summary,
+    highlights: item.highlights,
+    technologies: item.technologies,
+  }));
 
-const work: Job[] = [
-  ...[...experience]
-    .sort((a, b) => Number(b.period.endsWith("Present")) - Number(a.period.endsWith("Present")))
-    .map((item) => ({
-      name: item.company,
-      tagline: item.tagline,
-      years: formatPeriod(item.period),
-      summary: item.summary,
-      highlights: item.highlights,
-      technologies: item.technologies,
-    })),
-  {
-    name: education.institution,
-    tagline: education.tagline,
-    years: "",
-    summary: education.description,
-    highlights: [],
-    technologies: [],
-  },
-];
-
-const links = socialLinks.filter((link) => ["GitHub", "Bluesky", "X", "ORCID"].includes(link.label));
+const links = socialLinks.filter((link) => ["GitHub", "ORCID", "Bluesky", "X"].includes(link.label));
 const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
 ---
 
@@ -44,169 +25,372 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
   title="Andrii Shafar — Software Engineer & Applied Researcher"
   description="Andrii Shafar is a software engineer and applied researcher in Ukraine, building product systems and studying fuzzy and neural models for decision support."
 >
-  <header class="bar">
-    <a class="bar-mark" href="#top" aria-label="Andrii Shafar, back to top">AS</a>
-    <nav aria-label="Primary">
-      <a href={`mailto:${profile.email}`}>Email</a>
-      <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
-      <a href="/andrii-shafar-resume.pdf" download>Résumé</a>
-    </nav>
-  </header>
-
-  <main id="top">
-    <section class="hero">
-      <div class="hero-text">
-        <h1>
-          <span class="line"><span>Andrii</span></span>
-          <span class="line"><span>Shafar</span></span>
-        </h1>
-        <p class="lede">Software engineer and applied researcher, {profile.location}.</p>
+  <main class="workspace" data-workspace>
+    <div class="strip" data-strip>
+      <div class="column" style="--frac: 0.3333" data-column>
+        <section class="window window-photo" aria-label="Photo" tabindex="-1" data-window>
+          <img src="/andrii-shafar.jpg" alt={profile.name} width="640" height="640" draggable="false" />
+        </section>
       </div>
 
-      <figure class="portrait">
-        <div class="portrait-frame" data-portrait>
-          <img src="/andrii-shafar.jpg" alt={profile.name} width="460" height="460" />
-          <span class="crosshair crosshair-x" aria-hidden="true" data-crosshair-x></span>
-          <span class="crosshair crosshair-y" aria-hidden="true" data-crosshair-y></span>
-        </div>
-        <figcaption>
-          <span data-readout aria-hidden="true">x 000 · y 000</span>
-          <span>Fig. 1</span>
-        </figcaption>
-      </figure>
-    </section>
-
-    <section class="index" aria-label="Résumé">
-      <div class="group">
-        <h2>Work</h2>
-        <ul>
-          {work.map((item, index) => (
-            <li class="job">
-              {item.highlights.length > 0 ? (
-                <button class="row job-head" type="button" aria-expanded="false" aria-controls={`job-${index}`} data-job>
-                  <span class="row-main">{item.name}</span>
-                  <span class="row-sub">{item.tagline}</span>
-                  <span class="row-end">
-                    {item.years}
-                    <svg class="job-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" /></svg>
-                  </span>
-                </button>
-              ) : (
-                <div class="row job-head">
-                  <span class="row-main">{item.name}</span>
-                  <span class="row-sub">{item.tagline}</span>
-                  <span class="row-end">{item.years}</span>
-                </div>
-              )}
-              <p class="job-summary">{item.summary}</p>
-              {item.highlights.length > 0 && (
-                <div class="job-more" id={`job-${index}`}>
-                  <div class="job-more-inner">
-                    <ul class="job-highlights">
-                      {item.highlights.map((highlight) => <li>{highlight}</li>)}
-                    </ul>
-                    <p class="job-tech">{item.technologies.join(" · ")}</p>
-                  </div>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="group">
-        <h2>Projects</h2>
-        <ul>
-          {projects.map((project) => (
-            <li>
-              <a class="row" href={project.href} target="_blank" rel="noreferrer">
-                <span class="row-main">{project.name}</span>
-                <span class="row-sub">{project.tagline}</span>
-                <span class="row-end" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" width="16" height="16"><path d="M5 11 11 5M6 5h5v5" /></svg>
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="group">
-        <h2>Papers</h2>
-        <ul>
-          {publications.map((paper) => (
-            <li>
-              <a class="row row-paper" href={paper.href} target="_blank" rel="noreferrer">
-                <span class="row-main">{paper.title}</span>
-                <span class="row-end">{paper.year}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="group">
-        <h2>Contact</h2>
-        <div class="contact">
-          <button class="email" type="button" data-copy={profile.email}>
-            <span>{profile.email}</span>
-            <span class="email-icon" aria-hidden="true">
-              <svg class="icon-copy" viewBox="0 0 16 16" width="16" height="16">
-                <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
-                <path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" />
-              </svg>
-              <svg class="icon-check" viewBox="0 0 16 16" width="16" height="16"><path d="m3.5 8.5 3 3 6-7" /></svg>
-            </span>
-          </button>
-          <span class="sr-only" aria-live="polite" data-status></span>
-          <div class="links">
-            {links.map((link) => (
-              <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
-            ))}
+      <div class="column" style="--frac: 0.5" data-column>
+        <section class="window window-hello" aria-label="Hello" tabindex="-1" data-window>
+          <span class="window-tag">~</span>
+          <div class="hello">
+            <h1>Andrii<br />Shafar</h1>
+            <p class="lede">Software engineer and applied researcher, {profile.location}.</p>
+            <div class="actions">
+              <a class="action action-primary" href={`mailto:${profile.email}`}>Email</a>
+              <a class="action" href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
+              <a class="action" href="/andrii-shafar-resume.pdf" download>Résumé</a>
+            </div>
           </div>
-        </div>
+          <p class="hint" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> move · <kbd>O</kbd> overview</p>
+        </section>
       </div>
-    </section>
+
+      <div class="column" style="--frac: 0.6667" data-column>
+        <section class="window" aria-label="Work" tabindex="-1" data-window>
+          <span class="window-tag">~/work</span>
+          <div class="window-scroll">
+            <ul class="jobs">
+              {jobs.map((job, index) => (
+                <li class="job">
+                  <button class="job-head" type="button" aria-expanded="false" aria-controls={`job-${index}`} data-job>
+                    <span class="job-name">{job.name}</span>
+                    <span class="job-tagline">{job.tagline}</span>
+                    <span class="job-years">
+                      {job.years}
+                      <svg class="job-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" /></svg>
+                    </span>
+                  </button>
+                  <p class="job-summary">{job.summary}</p>
+                  <div class="job-more" id={`job-${index}`}>
+                    <div class="job-more-inner">
+                      <ul class="job-highlights">
+                        {job.highlights.map((highlight) => <li>{highlight}</li>)}
+                      </ul>
+                      <p class="job-tech">{job.technologies.join(" · ")}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+              <li class="job">
+                <div class="job-head">
+                  <span class="job-name">{education.institution}</span>
+                  <span class="job-tagline">{education.tagline}</span>
+                  <span class="job-years"></span>
+                </div>
+                <p class="job-summary">{education.description}</p>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <div class="column" style="--frac: 0.5" data-column>
+        <section class="window" aria-label="Projects" tabindex="-1" data-window>
+          <span class="window-tag">~/projects</span>
+          <div class="window-scroll">
+            <ul class="rows">
+              {projects.map((project) => (
+                <li>
+                  <a class="row" href={project.href} target="_blank" rel="noreferrer">
+                    <span class="row-text">
+                      <span class="row-main">{project.name}</span>
+                      <span class="row-sub">{project.tagline}</span>
+                    </span>
+                    <svg class="row-arrow" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" /></svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+        <section class="window" aria-label="Papers" tabindex="-1" data-window>
+          <span class="window-tag">~/papers</span>
+          <div class="window-scroll">
+            <ul class="rows">
+              {publications.map((paper) => (
+                <li>
+                  <a class="row row-paper" href={paper.href} target="_blank" rel="noreferrer">
+                    <span class="row-main">{paper.title}</span>
+                    <span class="row-year">{paper.year}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <div class="column" style="--frac: 0.3333" data-column>
+        <section class="window window-contact" aria-label="Contact" tabindex="-1" data-window>
+          <span class="window-tag">~/contact</span>
+          <div class="contact">
+            <button class="email" type="button" data-copy={profile.email}>
+              <span>{profile.email}</span>
+              <span class="email-icon" aria-hidden="true">
+                <svg class="icon-copy" viewBox="0 0 16 16" width="16" height="16">
+                  <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" />
+                  <path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" />
+                </svg>
+                <svg class="icon-check" viewBox="0 0 16 16" width="16" height="16"><path d="m3.5 8.5 3 3 6-7" /></svg>
+              </span>
+            </button>
+            <span class="sr-only" aria-live="polite" data-status></span>
+            <ul class="rows">
+              {links.map((link) => (
+                <li>
+                  <a class="row" href={link.href} target="_blank" rel="noreferrer">
+                    <span class="row-main">{link.label}</span>
+                    <span class="row-sub">{link.handle}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a class="action action-primary action-wide" href="/andrii-shafar-resume.pdf" download>Download résumé</a>
+          </div>
+        </section>
+      </div>
+    </div>
   </main>
 </Layout>
 
 <script>
-  const frame = document.querySelector<HTMLElement>("[data-portrait]")!;
-  const lineX = document.querySelector<HTMLElement>("[data-crosshair-x]")!;
-  const lineY = document.querySelector<HTMLElement>("[data-crosshair-y]")!;
-  const readout = document.querySelector<HTMLElement>("[data-readout]")!;
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const workspace = document.querySelector<HTMLElement>("[data-workspace]")!;
+  const strip = document.querySelector<HTMLElement>("[data-strip]")!;
+  const columns = [...document.querySelectorAll<HTMLElement>("[data-column]")];
 
-  // Crosshair follows the pointer over the portrait with a little lag, like a measuring tool.
-  const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-  let frameId = 0;
+  let offset = 0;
+  let active = { column: 1, row: 0 };
+  let overview = false;
 
-  function draw() {
-    pointer.x += (pointer.tx - pointer.x) * (reduceMotion ? 1 : 0.22);
-    pointer.y += (pointer.ty - pointer.y) * (reduceMotion ? 1 : 0.22);
-    lineX.style.transform = `translateY(${pointer.y}px)`;
-    lineY.style.transform = `translateX(${pointer.x}px)`;
-    const settled = Math.abs(pointer.tx - pointer.x) < 0.1 && Math.abs(pointer.ty - pointer.y) < 0.1;
-    frameId = settled ? 0 : requestAnimationFrame(draw);
+  const gap = () => parseFloat(getComputedStyle(strip).gap) || 16;
+  const maxOffset = () => Math.max(0, strip.scrollWidth - workspace.clientWidth);
+  const clamp = (value: number) => Math.min(maxOffset(), Math.max(0, value));
+  const windowsOf = (index: number) => [...columns[index].querySelectorAll<HTMLElement>("[data-window]")];
+
+  function apply(instant = false) {
+    strip.toggleAttribute("data-instant", instant);
+    if (overview) {
+      const scale = Math.min(1, (workspace.clientWidth - 2 * gap()) / strip.scrollWidth, 0.6);
+      const x = (workspace.clientWidth - strip.scrollWidth * scale) / 2;
+      const y = (workspace.clientHeight - workspace.clientHeight * scale) / 2;
+      strip.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+    } else {
+      strip.style.transform = `translateX(${-offset}px)`;
+    }
+    if (instant) requestAnimationFrame(() => strip.removeAttribute("data-instant"));
   }
 
-  frame.addEventListener("pointerenter", (event) => {
-    const rect = frame.getBoundingClientRect();
-    pointer.x = pointer.tx = event.clientX - rect.left;
-    pointer.y = pointer.ty = event.clientY - rect.top;
-    draw();
+  // Scroll the minimum distance that brings the column fully into view, like niri.
+  function reveal(index: number) {
+    const column = columns[index];
+    const left = column.offsetLeft - gap();
+    const right = column.offsetLeft + column.offsetWidth + gap();
+    if (left < offset) offset = left;
+    else if (right > offset + workspace.clientWidth) offset = right - workspace.clientWidth;
+    offset = clamp(offset);
+  }
+
+  function paintFocus() {
+    document.querySelectorAll("[data-window][data-active]").forEach((el) => el.removeAttribute("data-active"));
+    windowsOf(active.column)[active.row]?.setAttribute("data-active", "");
+  }
+
+  function focus(column: number, row = 0, instant = false) {
+    active = { column: Math.max(0, Math.min(columns.length - 1, column)), row };
+    active.row = Math.max(0, Math.min(windowsOf(active.column).length - 1, active.row));
+    reveal(active.column);
+    paintFocus();
+    apply(instant);
+  }
+
+  function setOverview(next: boolean) {
+    overview = next;
+    workspace.toggleAttribute("data-overview", overview);
+    if (!overview) reveal(active.column);
+    apply();
+  }
+
+  // Clicking a window focuses it (and leaves overview).
+  columns.forEach((column, c) => {
+    windowsOf(c).forEach((win, r) => {
+      let pointerType = "mouse";
+      win.addEventListener("pointerdown", (event) => (pointerType = event.pointerType));
+      win.addEventListener("click", (event) => {
+        if (overview) {
+          event.preventDefault();
+          active = { column: c, row: r };
+          paintFocus();
+          setOverview(false);
+          return;
+        }
+        if (active.column === c && active.row === r) return;
+        // A tap on touch only moves the focus ring; a mouse click also brings the window fully into view.
+        if (pointerType === "mouse") focus(c, r);
+        else {
+          active = { column: c, row: r };
+          paintFocus();
+        }
+      });
+      win.addEventListener("focusin", (event) => {
+        if (overview || event.target === win) return;
+        if (active.column !== c || active.row !== r) focus(c, r, true);
+      });
+    });
   });
 
-  frame.addEventListener("pointermove", (event) => {
-    const rect = frame.getBoundingClientRect();
-    pointer.tx = Math.min(rect.width, Math.max(0, event.clientX - rect.left));
-    pointer.ty = Math.min(rect.height, Math.max(0, event.clientY - rect.top));
-    const x = Math.round((pointer.tx / rect.width) * 460);
-    const y = Math.round((pointer.ty / rect.height) * 460);
-    readout.textContent = `x ${String(x).padStart(3, "0")} · y ${String(y).padStart(3, "0")}`;
-    if (!frameId) frameId = requestAnimationFrame(draw);
+  document.addEventListener("keydown", (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    const key = event.key.toLowerCase();
+    if (key === "o") return setOverview(!overview);
+    if (key === "escape" && overview) return setOverview(false);
+    const moves: Record<string, [number, number]> = {
+      arrowright: [1, 0],
+      l: [1, 0],
+      arrowleft: [-1, 0],
+      h: [-1, 0],
+      arrowdown: [0, 1],
+      j: [0, 1],
+      arrowup: [0, -1],
+      k: [0, -1],
+    };
+    const move = moves[key];
+    if (!move) return;
+    event.preventDefault();
+    if (overview) setOverview(false);
+    if (move[0]) focus(active.column + move[0]);
+    else focus(active.column, active.row + move[1]);
   });
 
+  // Free scrolling: the strip stays where the gesture leaves it, and focus follows the most visible column.
+  function followView() {
+    let best = 0;
+    let bestVisible = -1;
+    columns.forEach((column, index) => {
+      const left = Math.max(column.offsetLeft, offset);
+      const right = Math.min(column.offsetLeft + column.offsetWidth, offset + workspace.clientWidth);
+      const visible = (right - left) / column.offsetWidth;
+      if (visible > bestVisible + 0.001) {
+        best = index;
+        bestVisible = visible;
+      }
+    });
+    if (best !== active.column) {
+      active = { column: best, row: 0 };
+      paintFocus();
+    }
+  }
+
+  // Trackpad: two-finger horizontal swipe scrolls the strip 1:1.
+  let wheelIdle = 0;
+  workspace.addEventListener(
+    "wheel",
+    (event) => {
+      if (overview || Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      event.preventDefault();
+      offset = clamp(offset + event.deltaX);
+      apply(true);
+      clearTimeout(wheelIdle);
+      wheelIdle = window.setTimeout(followView, 100);
+    },
+    { passive: false },
+  );
+
+  // Mouse and touch drag with momentum; past either end it rubber-bands back.
+  let drag: { id: number; x: number; y: number; start: number; moving: boolean; v: number; lastX: number; lastT: number } | null =
+    null;
+  let dragged = false;
+  let glide = 0;
+
+  workspace.addEventListener("pointerdown", (event) => {
+    if (overview || !event.isPrimary || event.button !== 0) return;
+    cancelAnimationFrame(glide);
+    const now = performance.now();
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, start: offset, moving: false, v: 0, lastX: event.clientX, lastT: now };
+  });
+
+  workspace.addEventListener("pointermove", (event) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    const dx = event.clientX - drag.x;
+    const dy = event.clientY - drag.y;
+    if (!drag.moving) {
+      if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) {
+        drag = null;
+        return;
+      }
+      if (Math.abs(dx) < 8) return;
+      drag.moving = true;
+      dragged = true;
+      workspace.setPointerCapture(event.pointerId);
+      workspace.setAttribute("data-dragging", "");
+      window.getSelection()?.removeAllRanges();
+    }
+    const now = performance.now();
+    const dt = Math.max(1, now - drag.lastT);
+    drag.v = 0.8 * ((drag.lastX - event.clientX) / dt) + 0.2 * drag.v;
+    drag.lastX = event.clientX;
+    drag.lastT = now;
+    const raw = drag.start - dx;
+    offset = raw < 0 ? raw * 0.3 : raw > maxOffset() ? maxOffset() + (raw - maxOffset()) * 0.3 : raw;
+    apply(true);
+  });
+
+  function settle() {
+    const bounded = clamp(offset);
+    if (bounded !== offset) {
+      offset = bounded;
+      apply();
+    }
+    followView();
+  }
+
+  function release(event: PointerEvent) {
+    if (!drag || event.pointerId !== drag.id) return;
+    const { moving, lastT } = drag;
+    let velocity = performance.now() - lastT > 80 ? 0 : drag.v;
+    drag = null;
+    if (!moving) return;
+    workspace.removeAttribute("data-dragging");
+    window.setTimeout(() => (dragged = false), 0);
+
+    let last = performance.now();
+    const step = (now: number) => {
+      const dt = now - last;
+      last = now;
+      offset += velocity * dt;
+      velocity *= Math.pow(0.94, dt / 16);
+      const out = offset < 0 || offset > maxOffset();
+      if (out) velocity *= 0.6;
+      apply(true);
+      if (Math.abs(velocity) > 0.02 && !(out && Math.abs(velocity) < 0.2)) glide = requestAnimationFrame(step);
+      else settle();
+    };
+    if (Math.abs(velocity) > 0.05) glide = requestAnimationFrame(step);
+    else settle();
+  }
+
+  workspace.addEventListener("dragstart", (event) => event.preventDefault());
+  workspace.addEventListener("pointerup", release);
+  workspace.addEventListener("pointercancel", release);
+  workspace.addEventListener(
+    "click",
+    (event) => {
+      if (!dragged) return;
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    true,
+  );
+
+  window.addEventListener("resize", () => {
+    reveal(active.column);
+    apply(true);
+  });
+
+  // Expandable work entries.
   document.querySelectorAll<HTMLButtonElement>("[data-job]").forEach((button) => {
     const panel = document.getElementById(button.getAttribute("aria-controls")!)!;
     panel.inert = true;
@@ -217,10 +401,10 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
     });
   });
 
+  // Copy email.
   const email = document.querySelector<HTMLButtonElement>("[data-copy]")!;
   const status = document.querySelector<HTMLElement>("[data-status]")!;
   let reset = 0;
-
   email.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(email.dataset.copy!);
@@ -236,4 +420,6 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
       status.textContent = "";
     }, 1600);
   });
+
+  focus(1, 0, true);
 </script>
