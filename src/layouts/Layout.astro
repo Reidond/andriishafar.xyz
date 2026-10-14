@@ -17,8 +17,14 @@ const socialImageUrl = new URL("/og.png", Astro.site ?? "https://andriishafar.xy
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#101822" />
+    <meta name="theme-color" content="#0a0a0a" />
     <link rel="icon" type="image/jpeg" href="/andrii-shafar.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap"
+    />
     <link rel="alternate" type="application/pdf" href="/andrii-shafar-resume.pdf" title="Andrii Shafar résumé" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content="website" />
