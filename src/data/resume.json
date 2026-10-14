@@ -9,7 +9,7 @@
     "summary": "Product-minded software engineer with six years of evidence-backed work spanning fundraising technology, realtime AI interviewing, mental-health research platforms, cloud infrastructure, developer tooling, and applied research. Comfortable moving from public interfaces and payment flows to backend services, data pipelines, multi-tenant authorization, and delivery systems."
   },
   "audit": {
-    "summary": "This professional history was reconstructed from 8,539 authored, non-merge commit objects across 20 local repositories. Merge commits and a different contributor with a similar name were excluded.",
+    "summary": "This professional history was reconstructed from 10,957 authored, non-merge commit objects across 42 local repositories. Merge commits and a different contributor with a similar name were excluded.",
     "note": "Dates describe the available authored-commit evidence, not formal employment records."
   },
   "metrics": [
@@ -18,7 +18,7 @@
       "label": "years shipping production product systems"
     },
     {
-      "value": "8.5k+",
+      "value": "10.9k+",
       "label": "authored commits reviewed for this resume"
     },
     {
@@ -45,36 +45,42 @@
       "company": "Charidy",
       "period": "2020 - Present",
       "scope": "Fundraising platform engineering",
-      "summary": "Six years of full-stack product work across nine services and applications, from donor-facing campaign and checkout flows to backend services, operations tooling, integrations, and AI-assisted workflows.",
+      "tagline": "Fundraising platform",
+      "summary": "Six years of full-stack product work across nine services and applications, from donor-facing campaign and checkout flows to backend services, identity and sign-in, operations tooling, integrations, and AI-assistant access through MCP.",
       "highlights": [
-        "Built and evolved a component-driven fundraising platform across Nuxt generations and a skin-based Vue 3 checkout with reusable multi-step flows, attribution, localization, and build-time gateway composition.",
+        "Expanded an OAuth-protected MCP server for AI assistants to 77 read and write tools spanning campaigns, teams, donations, exports, receipts, and reports, with approval-gated actions, opt-in donor-data scopes, and container-tested permission checks.",
+        "Built a standalone OAuth and OpenID Connect authorization server with partner entitlements and rotating signing keys, plus a hosted sign-in offering email and phone codes, two-factor checks, and origin-bound tokens for embedding sites.",
+        "Built and evolved a component-driven fundraising platform across Nuxt generations, including moving the admin app from Vue 2 to Nuxt 4, and a skin-based Vue 3 checkout with reusable multi-step flows, attribution, and localization.",
+        "Delivered campaign, team, and donation operations with contact management, secure analytics, custom reports, durable export jobs, queued campaign-total aggregation, and watermark-driven search-index sync that recovers from outages without gaps.",
         "Integrated and hardened Stripe wallets and 3DS, PayPal, PayArc, Cardknox card and ACH, raffle preauthorization, and configurable international tax-compliance and receipt workflows.",
-        "Delivered campaign, team, and donation operations with contact management, secure analytics, custom reports, streaming exports, and queued campaign-total aggregation.",
-        "Built email and SMS outreach with reusable audiences, templates, drafts, asynchronous delivery, provider callbacks, audience safeguards, and operational health diagnostics.",
-        "Implemented peer matching, team nominations, auctions, raffle registration, prize wheels, projector and live-feed experiences, with server-side eligibility and inventory protections.",
-        "Designed OAuth-protected AI and MCP integrations plus HubSpot CRM automation with typed tools, approval-gated actions, setup reconciliation, entity linking, and guarded bulk operations."
+        "Built email, SMS, and WhatsApp outreach with reusable audiences, templates, asynchronous delivery, opt-in flows, and provider callbacks, plus continuous HubSpot CRM sync with setup reconciliation, entity linking, and guarded bulk operations.",
+        "Implemented peer matching, team nominations, auctions, raffle registration, prize wheels, projector and live-feed experiences, with server-side eligibility and inventory protections."
       ],
       "technologies": [
         "Go",
         "Vue & Nuxt",
         "TypeScript",
         "Payments",
+        "OAuth & OpenID Connect",
+        "MCP",
         "AWS & queues",
         "CRM & messaging"
       ]
     },
     {
       "company": "Lemmi",
-      "period": "2026",
+      "period": "2026 - Present",
       "scope": "AI interviewing and platform engineering",
-      "summary": "Backend, frontend, and developer-platform work for realtime voice interviewing, durable background processing, speech-to-text, production operations, and reusable AI engineering workflows.",
+      "tagline": "AI interviewing",
+      "summary": "Backend, frontend, and developer-platform work for realtime voice interviewing, interview retakes, durable background processing, speech-to-text, integration testing, and reusable AI engineering workflows.",
       "highlights": [
+        "Built interview retakes end to end: lineage-tracked attempts, a Retry flow in the Angular client, and a fail-open pipeline that feeds earlier attempts' feedback into the realtime interviewer so covered areas are not re-asked.",
         "Designed an owner-scoped background-job platform with durable state and event delivery, registry-based dispatch, frontend integration, admission control, and cross-user authorization safeguards.",
+        "Modernized the Python platform around uv, Ruff, basedpyright, and Alembic, then replaced the legacy mock-based suite with a Testcontainers harness running the real app against migrated PostgreSQL and containerized service fakes.",
+        "Pinned defects found by the new suite as strict expected-failure tests and fixed about 40, covering WebSocket reconnection, connection limits, audio ordering, coaching flows, and caller identity taken only from verified tokens.",
         "Built configurable realtime and batch speech-to-text pipelines and improved voice interviews with echo suppression, resilient WebSocket reconnects, and buffered-audio recovery.",
-        "Refactored realtime interview and voice-test sessions onto shared event, action, runtime-state, and ordered-shutdown primitives to reduce coupling across workflows.",
-        "Delivered full-stack automated interview testing with generated speech, PCM injection, lifecycle controls, local and cloud recording storage, and diagnostic exports.",
-        "Modernized the Python platform around uv, Ruff, basedpyright, Alembic, and honest CI gates; added structured crash visibility and hardened authorization and validation boundaries.",
-        "Created a reusable AI-engineering toolkit with orchestration and review workflows, automated installation, typed Python APIs, and Claude Code and Codex plugin packaging."
+        "Refactored realtime interview and voice-test sessions onto shared event, action, and shutdown primitives, and delivered automated interview testing with generated speech, PCM injection, recording storage, and diagnostic exports.",
+        "Created a reusable AI-engineering toolkit with orchestration and review workflows, later repackaged as native Claude Code and Codex plugin packs with bundled file search, flow mapping, and agent-led installation."
       ],
       "technologies": [
         "Python",
@@ -82,21 +88,25 @@
         "Angular",
         "Realtime audio",
         "WebSockets",
-        "PostgreSQL"
+        "PostgreSQL",
+        "Testcontainers",
+        "Claude Code"
       ]
     },
     {
       "company": "SapienLabs",
       "period": "2026 - Present",
-      "scope": "Research platforms, reporting, and cloud delivery",
-      "summary": "Cross-stack engineering for survey research, mental-health scoring, multi-tenant reporting, machine-to-machine exports, guided workforce journeys, and AWS delivery infrastructure.",
+      "scope": "Research platforms, survey products, and cloud delivery",
+      "tagline": "Research platforms",
+      "summary": "Cross-stack engineering for survey research, mental-health scoring, multi-tenant reporting, guided workforce journeys, a paid self-service group assessment, template-driven launch and export APIs, and AWS delivery infrastructure.",
       "highlights": [
+        "Built the self-service Group MHQ product end to end: a Go launch API, Stripe checkout with seat-based pricing, OAuth PKCE membership sign-in with free-launch entitlements, aggregated group scoring, retry and refund recovery, and PDF reports.",
         "Re-architected a Python reporting application into a typed uv monorepo with a separated API, generated client, modern React frontend, migration-managed PostgreSQL and RBAC, and containerized delivery.",
-        "Designed and hardened AWS CDK infrastructure using managed containers and PostgreSQL, HTTPS edge delivery, keyless CI authentication, conditional rollouts, and workload-aware cost controls.",
-        "Built secure multi-tenant identity and administration spanning sessions, password recovery, organizations, teams, invitations, self-service workspace creation, and revision-level authorization.",
-        "Implemented role-scoped reporting and external survey synchronization with encrypted organization credentials, operational sync monitoring, curated trends, and live TeamQ and OrgQ journeys.",
-        "Expanded the MHQ survey and research platform with lifecycle controls, accurate drop-off analytics, mobile interaction safeguards, an embeddable Web Component, and an invite-only CSV Research Calculator.",
-        "Delivered machine-to-machine survey exports and a service-account console with scoped access, one-time credentials, token rotation, stable historical revision identity, deterministic CSV contracts, and pagination."
+        "Delivered machine-to-machine survey exports and launch APIs with stable revision identity, deterministic CSV contracts, language-independent question codes, template launch and relaunch, project-scoped service accounts editable in place, and ownership guards.",
+        "Implemented role-scoped reporting with external survey synchronization, sync monitoring, localized-survey recognition, live TeamQ and OrgQ journeys, and in-app template launches.",
+        "Built secure multi-tenant identity and administration spanning bearer-token sessions, password recovery, organizations, teams, invitations, self-service workspace creation, revision-level authorization, and scoped, revocable sign-in for AI agents.",
+        "Expanded the MHQ survey platform with side-by-side revised scoring via a batch Lambda, cross-survey branching redirects, editable templates, video statements, conditional report blocks, accurate drop-off analytics, and an invite-only Research Calculator.",
+        "Designed AWS CDK infrastructure with managed containers and PostgreSQL, HTTPS edge delivery, keyless CI authentication, and cost controls, and cut CI/CD time and spend across seven repositories through ARM runners, artifact reuse, and immutable releases."
       ],
       "technologies": [
         "Go",
@@ -104,7 +114,9 @@
         "Python & uv",
         "AWS CDK",
         "PostgreSQL",
-        "BigQuery & S3"
+        "BigQuery & S3",
+        "Stripe",
+        "GitHub Actions"
       ]
     }
   ],
@@ -113,6 +125,7 @@
       "index": "01",
       "name": "Tourism Risk Platform",
       "description": "An intelligent analytical system for evaluating travel-safety risk across individual, regional, and national levels.",
+      "tagline": "Travel-safety risk analysis",
       "stack": "Python - Fuzzy systems - Decision support",
       "href": "https://github.com/Reidond/travel-risk-platform"
     },
@@ -120,6 +133,7 @@
       "index": "02",
       "name": "Stavka",
       "description": "An LLM-powered strategic orchestration layer that drives a dynamic AI opponent inside Arma Reforger.",
+      "tagline": "LLM opponent for Arma Reforger",
       "stack": "TypeScript - LLM agents - Game systems",
       "href": "https://reforger.armaplatform.com/workshop/68B1A0F0C0DE0001"
     },
@@ -127,6 +141,7 @@
       "index": "03",
       "name": "bwssh",
       "description": "A Bitwarden-backed SSH agent built to keep key access convenient without loosening the security model.",
+      "tagline": "Bitwarden-backed SSH agent",
       "stack": "Python - SSH - Security tooling",
       "href": "https://pypi.org/project/bwssh/"
     },
@@ -134,6 +149,7 @@
       "index": "04",
       "name": "Open-source tools",
       "description": "Developer utilities and experiments spanning terminal themes, Vue components, editor tooling, Rust, Go, and native apps.",
+      "tagline": "Themes, components, CLIs",
       "stack": "115 public repositories - GitHub since 2016",
       "href": "https://github.com/Reidond?tab=repositories"
     }
@@ -141,6 +157,7 @@
   "education": {
     "institution": "Uzhhorod National University",
     "role": "Postgraduate researcher and teaching support",
+    "tagline": "Postgraduate research",
     "description": "Applied AI, fuzzy models, and decision-support systems for tourism in the Department of Software Systems."
   },
   "publications": [
