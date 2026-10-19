@@ -10,17 +10,17 @@
   --accent-hover: #fa7a5a;
   --sun: #fbcfad;
   --line: rgb(255 214 196 / 0.16);
-  --edge: rgb(255 214 196 / 0.09);
   --shade: #0d0000;
   --gap: 16px;
-  --peek: clamp(96px, 15vw, 260px);
+  --peek: clamp(40px, 5vw, 96px);
   --nudge: clamp(48px, 4.5vw, 76px);
-  --radius: 14px;
+  /* Pixel-stepped corners instead of smooth radii. */
+  --corners: polygon(0 12px, 4px 12px, 4px 4px, 12px 4px, 12px 0, calc(100% - 12px) 0, calc(100% - 12px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 12px, 100% 12px, 100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%, 12px 100%, 12px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 12px), 0 calc(100% - 12px));
+  --corners-sm: polygon(0 6px, 2px 6px, 2px 2px, 6px 2px, 6px 0, calc(100% - 6px) 0, calc(100% - 6px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 6px, 100% 6px, 100% calc(100% - 6px), calc(100% - 2px) calc(100% - 6px), calc(100% - 2px) calc(100% - 2px), calc(100% - 6px) calc(100% - 2px), calc(100% - 6px) 100%, 6px 100%, 6px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 6px), 0 calc(100% - 6px));
   --ring: 3px;
   --ring-offset: 3px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-  --icon-ease: cubic-bezier(0.2, 0, 0, 1);
   --sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   color-scheme: dark;
@@ -57,7 +57,6 @@ a {
 :focus-visible {
   outline: 2px solid var(--sun);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 .sr-only {
@@ -76,8 +75,14 @@ a {
   overflow: hidden;
   background:
     linear-gradient(20deg, rgb(28 1 1 / 0.8), transparent 60%),
-    url("/wallpaper/sunset.webp") 75% 45% / cover var(--wall);
+    url("/wallpaper/sunset.webp") 0 45% / max(72vw, 100vh) no-repeat var(--wall);
   image-rendering: pixelated;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .wallpaper {
+    background-position: 0 0, 75% 45%;
+  }
 }
 
 .wallpaper canvas {
@@ -102,10 +107,12 @@ a {
 }
 
 /* Workspace and scrolling strip */
+/* clip, not hidden: a hidden box can still be scrolled by focus and scrollIntoView, which would shift the strip
+   on top of its own transform. */
 .workspace {
   position: relative;
   height: 100%;
-  overflow: hidden;
+  overflow: clip;
   touch-action: pan-y;
 }
 
@@ -178,28 +185,27 @@ a {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius);
   outline: var(--ring) solid transparent;
   outline-offset: var(--ring-offset);
   transition-property: outline-color;
   transition-duration: 150ms;
-  animation: open 420ms var(--ease-out) backwards;
+  animation: open 360ms linear backwards;
 }
 
-/* The surface and a hard, 50% dithered drop shadow sit behind every window's content. */
+/* The surface, lit from the top with a dithered glow, and a hard 50% dithered drop shadow sit behind every
+   window's content. */
 .window::before,
 .window::after {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
+  clip-path: var(--corners);
   pointer-events: none;
 }
 
 .window::before {
   z-index: -1;
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px var(--edge);
+  background: url("/dither/glow.svg") repeat-x 0 0, var(--surface);
 }
 
 .window::after {
@@ -260,7 +266,7 @@ a {
   position: relative;
   flex: 1;
   overflow: hidden;
-  border-radius: var(--radius);
+  clip-path: var(--corners);
   background: var(--surface);
 }
 
@@ -287,27 +293,92 @@ a {
   opacity: 1;
 }
 
-/* Hero: sits straight on the wallpaper, with the first window peeking in from the right. */
+/* Hero: sits straight on the wallpaper next to the photo, with the work window peeking in from the right. */
 .column-hero {
-  width: calc(100vw - 2 * var(--gap) - var(--peek));
+  --photo: calc(0.3333 * (100vw - var(--gap)) - var(--gap));
+  width: calc(100vw - 3 * var(--gap) - var(--photo) - var(--peek));
 }
 
 .hero {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr;
   height: 100%;
-  padding: clamp(20px, 3.5vw, 48px);
+  padding: clamp(12px, 2vw, 24px) clamp(20px, 3.5vw, 48px) clamp(20px, 3.5vw, 48px);
 }
 
-.hero-tag {
+.hero-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  animation: open 360ms linear 220ms backwards;
+}
+
+/* Chips are small windows: a dithered, pixel-cornered surface with a hard dithered shadow. */
+.chip {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  margin: 0;
+  padding: 0 10px;
+  border: 0;
+  background: none;
   color: var(--sun);
   font: 400 12px/1 var(--mono);
-  animation: rise 600ms var(--ease-out) 200ms backwards;
+}
+
+.chip::before,
+.chip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: var(--corners-sm);
+  pointer-events: none;
+}
+
+.chip::before {
+  z-index: -1;
+  background: url("/dither/glow-sm.svg") repeat-x 0 0, var(--surface);
+  transition: background-color 120ms ease;
+}
+
+.chip::after {
+  z-index: -2;
+  translate: 4px 4px;
+  background: repeating-conic-gradient(var(--shade) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+}
+
+.chip-button {
+  padding-right: 8px;
+  color: var(--text);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chip-button .pixel {
+  color: var(--accent);
+}
+
+/* Pressing sinks the button onto its shadow. */
+.chip-button:active {
+  translate: 2px 2px;
+}
+
+.chip-button:active::after {
+  translate: 2px 2px;
+}
+
+.chip-button[aria-pressed="true"]::before {
+  background-color: var(--raised);
 }
 
 .hero-body {
   align-self: end;
-  animation: rise 700ms var(--ease-out) 80ms backwards;
+  animation: open 360ms linear 80ms backwards;
 }
 
 h1 {
@@ -356,8 +427,8 @@ h1::before {
   justify-content: center;
   height: 40px;
   padding: 0 16px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.07);
+  background: url("/dither/glow-sm.svg") repeat-x 0 0, var(--surface);
+  clip-path: var(--corners-sm);
   font-size: 15px;
   font-weight: 500;
   transition-property: background-color, transform;
@@ -366,84 +437,38 @@ h1::before {
 }
 
 .action-primary {
-  background: var(--accent);
+  background: url("/dither/shade-sm.svg") repeat-x 0 100%, var(--accent);
   color: var(--wall);
-}
-
-.hero .action:not(.action-primary) {
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px var(--edge);
 }
 
 .action:active {
   transform: scale(0.96);
 }
 
+/* Clipped controls can't show an outline, so they ring themselves from the inside. */
+.action:focus-visible,
+.email:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--sun);
+}
+
 .hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  justify-self: end;
-  margin: 32px 0 0;
-  padding: 8px 10px 8px 14px;
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: inset 0 0 0 1px var(--edge);
   color: var(--muted);
-  font: 400 12px/1 var(--mono);
-  animation: rise 600ms var(--ease-out) 320ms backwards;
 }
 
 .hint-touch {
   display: none;
 }
 
-.hint-arrow {
-  color: var(--sun);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.workspace[data-nudge] .hint-arrow {
-  animation: point 4.8s 1.4s infinite;
-}
-
-@keyframes point {
-  0% {
-    translate: 0;
-    animation-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
-  }
-  10% {
-    translate: 6px 0;
-    animation-timing-function: cubic-bezier(0.5, 0, 0.3, 1);
-  }
-  20% {
-    translate: -1px 0;
-  }
-  30%,
-  100% {
-    translate: 0;
-  }
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    translate: 0 12px;
-  }
-}
-
 kbd {
   display: inline-grid;
   place-items: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 4px;
-  border-radius: 5px;
-  background: rgb(255 255 255 / 0.08);
+  min-width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  padding: 0 3px;
+  background: var(--raised);
+  clip-path: var(--corners-sm);
   color: var(--text);
   font: inherit;
 }
@@ -500,26 +525,30 @@ button.job-head {
   white-space: nowrap;
 }
 
-.job-icon,
-.row-arrow,
-.email-icon svg {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* Icons are drawn on a grid of 2px cells. */
+.pixel {
+  fill: currentColor;
+  shape-rendering: crispEdges;
 }
 
 .job-icon {
   color: var(--text);
-  transition-property: transform, color;
-  transition-duration: 200ms, 120ms;
-  transition-timing-function: var(--ease-out), ease;
+  transition-property: color;
+  transition-duration: 120ms;
+}
+
+.job-icon-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: scale 180ms steps(3, end);
 }
 
 .job-head[aria-expanded="true"] .job-icon {
   color: var(--accent);
-  transform: rotate(45deg);
+}
+
+.job-head[aria-expanded="true"] .job-icon-bar {
+  scale: 1 0;
 }
 
 .job-summary {
@@ -663,7 +692,7 @@ button.job-head {
   margin: 0 -12px 8px;
   padding: 0 12px;
   border: 0;
-  border-radius: 10px;
+  clip-path: var(--corners-sm);
   background: none;
   color: var(--text);
   font: 500 clamp(18px, 1.6vw, 22px) / 1.2 var(--sans);
@@ -693,22 +722,20 @@ button.job-head {
   inset: 0;
   width: 18px;
   height: 18px;
-  transition-property: opacity, scale, filter;
+  transition-property: opacity, scale;
   transition-duration: 200ms;
-  transition-timing-function: var(--icon-ease);
+  transition-timing-function: steps(3, end);
 }
 
 .icon-check,
 .email[data-copied] .icon-copy {
   opacity: 0;
-  scale: 0.25;
-  filter: blur(4px);
+  scale: 0.5;
 }
 
 .email[data-copied] .icon-check {
   opacity: 1;
   scale: 1;
-  filter: blur(0);
   color: var(--accent);
 }
 
@@ -721,7 +748,6 @@ button.job-head {
   width: 100%;
   height: 48px;
   margin-top: auto;
-  border-radius: calc(var(--radius) - 4px);
 }
 
 .window-contact .rows {
@@ -743,15 +769,15 @@ button.job-head {
 
 @media (hover: hover) and (pointer: fine) {
   .action:hover {
-    background: rgb(255 255 255 / 0.12);
+    background-color: var(--raised);
   }
 
   .action-primary:hover {
-    background: var(--accent-hover);
+    background-color: var(--accent-hover);
   }
 
-  .hero .action:not(.action-primary):hover {
-    background: var(--raised);
+  .chip-button:hover::before {
+    background-color: var(--raised);
   }
 
   .window-photo:hover .photo canvas {
@@ -768,7 +794,7 @@ button.job-head {
   }
 
   .email:hover {
-    background: rgb(255 255 255 / 0.05);
+    background: repeating-conic-gradient(var(--raised) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
   }
 
   .workspace[data-overview] .window:hover {
@@ -776,10 +802,22 @@ button.job-head {
   }
 }
 
+/* Windows dissolve in through dither densities: none, 1/4, 1/2, 3/4, solid. */
 @keyframes open {
-  from {
-    opacity: 0;
-    scale: 0.96;
+  0% {
+    mask: linear-gradient(transparent, transparent);
+  }
+  25% {
+    mask: conic-gradient(#000 0 25%, transparent 0) 0 0 / 4px 4px;
+  }
+  50% {
+    mask: repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+  }
+  75% {
+    mask: conic-gradient(transparent 0 25%, #000 0) 0 0 / 4px 4px;
+  }
+  100% {
+    mask: none;
   }
 }
 
@@ -807,10 +845,6 @@ button.job-head {
     width: calc(100vw - 2 * var(--gap) - var(--peek));
   }
 
-  .hint {
-    justify-self: start;
-  }
-
   .job-head {
     grid-template-columns: minmax(0, 1fr) auto;
     row-gap: 2px;
@@ -827,30 +861,12 @@ button.job-head {
 
 @media (prefers-reduced-motion: reduce) {
   .strip,
-  .job-more,
-  .job-icon {
+  .job-more {
     transition-duration: 0ms;
   }
 
-  .window {
-    animation-name: fade;
-  }
-
-  .hero-tag,
-  .hero-body,
-  .hint {
-    animation-name: fade;
-  }
-
-  .workspace[data-nudge] .strip,
-  .workspace[data-nudge] .hint-arrow {
+  .workspace[data-nudge] .strip {
     animation: none;
-  }
-
-  @keyframes fade {
-    from {
-      opacity: 0;
-    }
   }
 }
 

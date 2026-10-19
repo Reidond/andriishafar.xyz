@@ -18,6 +18,13 @@ export interface DitherOptions {
   cell: number;
   /** Which part of the source stays in view when it is cropped, like `object-position` (0–1). */
   focus?: [x: number, y: number];
+  /**
+   * Show the source smaller than `cover` would: at this fraction of the canvas width, as long as it still
+   * fills the height. The uncovered sides continue the source's edge as soft bands.
+   */
+  zoom?: number;
+  /** Where the source sits along an axis it no longer covers after zooming out (0–1, like `focus`). */
+  anchor?: [x: number, y: number];
   /** How much to darken the bottom-left corner so text on top stays readable (0–1). */
   scrim?: number;
   /** Animate a still image: rippling water, drifting clouds, a breathing sun. */
@@ -40,6 +47,8 @@ uniform sampler2D uTex;
 uniform vec2 uRes;
 uniform vec2 uTexSize;
 uniform vec2 uFocus;
+uniform vec2 uAnchor;
+uniform float uZoom;
 uniform float uTime;
 uniform float uScrim;
 uniform float uScene;
@@ -58,11 +67,12 @@ void main() {
   vec2 cell = gl_FragCoord.xy;
   vec2 uv = vec2(cell.x / uRes.x, 1.0 - cell.y / uRes.y);
 
-  // Cover the canvas with the source, cropping around uFocus.
+  // Cover the canvas with the source, cropping around uFocus, then zoom out while it still fills the height.
   float canvasAspect = uRes.x / uRes.y;
   float texAspect = uTexSize.x / uTexSize.y;
   vec2 span = canvasAspect > texAspect ? vec2(1.0, texAspect / canvasAspect) : vec2(canvasAspect / texAspect, 1.0);
-  vec2 p = (1.0 - span) * uFocus + uv * span;
+  span /= max(uZoom, span.y);
+  vec2 p = (1.0 - span) * mix(uFocus, uAnchor, step(1.0, span)) + uv * span;
 
   float water = 0.0;
   float glow = 0.0;
@@ -80,7 +90,19 @@ void main() {
     glow = smoothstep(uSun.z * 2.6, uSun.z * 0.9, d) * (0.5 + 0.5 * sin(uTime * 1.1)) * 0.07;
   }
 
-  float l = dot(texture(uTex, p).rgb, vec3(0.299, 0.587, 0.114)) + glow;
+  // Past the source's edges, sample ever blurrier mip levels the further out the cell is, so the edge
+  // continues as soft bands instead of hard streaks.
+  vec2 outside = max(max(-p, p - 1.0), 0.0);
+  float beyond = max(outside.x, outside.y);
+  vec3 color;
+  if (beyond > 0.0) {
+    float base = log2(max(1.0, uTexSize.x * span.x / uRes.x));
+    color = textureLod(uTex, clamp(p, 0.0, 1.0), mix(base, 7.0, smoothstep(0.0, 0.15, beyond))).rgb;
+  } else {
+    color = texture(uTex, p).rgb;
+  }
+
+  float l = dot(color, vec3(0.299, 0.587, 0.114)) + glow;
   l *= 1.0 - uScrim * smoothstep(1.2, 0.15, length((uv - vec2(0.0, 1.0)) * vec2(0.8, 1.15)));
 
   // On water the threshold pattern shifts a few times a second, so mid-tones glitter.
@@ -134,7 +156,7 @@ export function dither(canvas: HTMLCanvasElement, initial: HTMLImageElement | HT
 
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -145,6 +167,8 @@ export function dither(canvas: HTMLCanvasElement, initial: HTMLImageElement | HT
   gl.uniform1fv(u("uLum"), colors.map(([r, g, b]) => 0.299 * r + 0.587 * g + 0.114 * b));
   gl.uniform1i(u("uCount"), colors.length);
   gl.uniform2fv(u("uFocus"), options.focus ?? [0.5, 0.5]);
+  gl.uniform2fv(u("uAnchor"), options.anchor ?? options.focus ?? [0.5, 0.5]);
+  gl.uniform1f(u("uZoom"), options.zoom ?? 1);
   gl.uniform1f(u("uScrim"), options.scrim ?? 0);
 
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -169,6 +193,7 @@ export function dither(canvas: HTMLCanvasElement, initial: HTMLImageElement | HT
     if (!ready()) return;
     if (isVideo() || !uploaded) {
       gl!.texImage2D(gl!.TEXTURE_2D, 0, gl!.RGB, gl!.RGB, gl!.UNSIGNED_BYTE, source);
+      gl!.generateMipmap(gl!.TEXTURE_2D);
       uploaded = true;
     }
     const width = source instanceof HTMLVideoElement ? source.videoWidth : source.naturalWidth;
