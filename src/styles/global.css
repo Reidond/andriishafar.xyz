@@ -1,13 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --wall: #0a0a0a;
-  --surface: #141414;
-  --text: #f1eee8;
-  --muted: #a29d96;
-  --accent: #ff5a1f;
-  --line: rgb(255 255 255 / 0.08);
+  --wall: #1c0101;
+  --surface: #120404;
+  --raised: #1f0807;
+  --text: #ffe9d8;
+  --muted: #c0978d;
+  --accent: #f95b3e;
+  --accent-hover: #fa7a5a;
+  --sun: #fbcfad;
+  --line: rgb(255 214 196 / 0.16);
+  --edge: rgb(255 214 196 / 0.09);
+  --shade: #0d0000;
   --gap: 16px;
+  --peek: clamp(96px, 15vw, 260px);
+  --nudge: clamp(48px, 4.5vw, 76px);
   --radius: 14px;
   --ring: 3px;
   --ring-offset: 3px;
@@ -34,19 +41,12 @@ body {
   color: var(--text);
   font: 400 16px/1.5 var(--sans);
   -webkit-font-smoothing: antialiased;
-  background-color: var(--wall);
-  background-image:
-    radial-gradient(120% 90% at 50% 0%, transparent 40%, rgb(0 0 0 / 0.6)),
-    linear-gradient(rgb(255 90 31 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 90 31 / 0.07) 1px, transparent 1px),
-    linear-gradient(rgb(255 90 31 / 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 90 31 / 0.035) 1px, transparent 1px);
-  background-size: auto, 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background: var(--wall);
 }
 
 ::selection {
   background: var(--accent);
-  color: #0a0a0a;
+  color: var(--wall);
 }
 
 a {
@@ -55,7 +55,7 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--sun);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -67,6 +67,38 @@ a {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* Wallpaper: the CSS image shows until the dithered canvas has drawn its first frame. */
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(20deg, rgb(28 1 1 / 0.8), transparent 60%),
+    url("/wallpaper/sunset.webp") 75% 45% / cover var(--wall);
+  image-rendering: pixelated;
+}
+
+.wallpaper canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.wallpaper canvas[data-ready] {
+  opacity: 1;
+}
+
+.wallpaper video {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Workspace and scrolling strip */
@@ -100,6 +132,37 @@ a {
   transition-duration: 0ms;
 }
 
+/* Until the first interaction the strip tugs toward the next column and springs back. */
+.workspace[data-nudge] .strip {
+  animation: nudge 4.8s 1.4s infinite;
+}
+
+@keyframes nudge {
+  0% {
+    translate: 0;
+    animation-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
+  }
+  10% {
+    translate: calc(-1 * var(--nudge)) 0;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.3, 1);
+  }
+  20% {
+    translate: calc(0.16 * var(--nudge)) 0;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+  }
+  27% {
+    translate: calc(-0.06 * var(--nudge)) 0;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+  }
+  33% {
+    translate: 1px 0;
+  }
+  38%,
+  100% {
+    translate: 0;
+  }
+}
+
 .column {
   flex: none;
   display: flex;
@@ -116,11 +179,6 @@ a {
   display: flex;
   flex-direction: column;
   border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.07),
-    0 1px 2px rgb(0 0 0 / 0.4),
-    0 12px 32px -12px rgb(0 0 0 / 0.7);
   outline: var(--ring) solid transparent;
   outline-offset: var(--ring-offset);
   transition-property: outline-color;
@@ -128,28 +186,54 @@ a {
   animation: open 420ms var(--ease-out) backwards;
 }
 
+/* The surface and a hard, 50% dithered drop shadow sit behind every window's content. */
+.window::before,
+.window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.window::before {
+  z-index: -1;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--edge);
+}
+
+.window::after {
+  z-index: -2;
+  translate: 8px 8px;
+  background: repeating-conic-gradient(var(--shade) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+}
+
 .window[data-active] {
-  outline-color: var(--accent);
+  outline-color: var(--sun);
 }
 
 .window:focus-visible {
-  outline-color: var(--accent);
+  outline-color: var(--sun);
 }
 
 .column:nth-child(2) .window {
-  animation-delay: 70ms;
+  animation-delay: 160ms;
 }
 
 .column:nth-child(3) .window {
-  animation-delay: 140ms;
+  animation-delay: 230ms;
 }
 
 .column:nth-child(4) .window {
-  animation-delay: 210ms;
+  animation-delay: 300ms;
 }
 
 .column:nth-child(5) .window {
-  animation-delay: 280ms;
+  animation-delay: 370ms;
+}
+
+.column:nth-child(6) .window {
+  animation-delay: 440ms;
 }
 
 .window-tag {
@@ -171,45 +255,90 @@ a {
   scrollbar-color: rgb(255 255 255 / 0.18) transparent;
 }
 
-/* Photo */
-.window-photo {
+/* Photo: dithered like the wallpaper; the real photo shows through on hover. */
+.photo {
+  position: relative;
+  flex: 1;
   overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface);
 }
 
-.window-photo img {
+.photo img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 40%;
-  border-radius: var(--radius);
   user-select: none;
 }
 
-
-/* Hello */
-.window-hello {
-  justify-content: space-between;
-  padding: 24px;
+.photo canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 300ms ease;
 }
 
-.hello {
-  margin: auto 0;
-  padding: 24px 8px 0;
+.photo canvas[data-ready] {
+  opacity: 1;
+}
+
+/* Hero: sits straight on the wallpaper, with the first window peeking in from the right. */
+.column-hero {
+  width: calc(100vw - 2 * var(--gap) - var(--peek));
+}
+
+.hero {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  padding: clamp(20px, 3.5vw, 48px);
+}
+
+.hero-tag {
+  color: var(--sun);
+  font: 400 12px/1 var(--mono);
+  animation: rise 600ms var(--ease-out) 200ms backwards;
+}
+
+.hero-body {
+  align-self: end;
+  animation: rise 700ms var(--ease-out) 80ms backwards;
 }
 
 h1 {
+  position: relative;
+  isolation: isolate;
   margin: 0;
-  color: var(--accent);
-  font-size: clamp(56px, 7.4vw, 128px);
+  color: var(--text);
+  font-size: clamp(60px, 9vw, 164px);
   font-weight: 500;
-  line-height: 0.88;
+  line-height: 0.86;
   letter-spacing: -0.055em;
 }
 
+/* A hard dithered shadow: the same text, filled with a 1-in-2 checkerboard. */
+h1::before {
+  content: attr(data-shadow);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  white-space: pre-line;
+  translate: max(4px, 0.05em) max(4px, 0.05em);
+  color: transparent;
+  background: repeating-conic-gradient(var(--shade) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 .lede {
-  max-width: 26ch;
-  margin: 24px 0 0;
-  font-size: clamp(18px, 1.5vw, 22px);
+  max-width: 30ch;
+  margin: 28px 0 0;
+  font-size: clamp(18px, 1.6vw, 24px);
   line-height: 1.4;
   text-wrap: balance;
 }
@@ -238,7 +367,12 @@ h1 {
 
 .action-primary {
   background: var(--accent);
-  color: #0a0a0a;
+  color: var(--wall);
+}
+
+.hero .action:not(.action-primary) {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--edge);
 }
 
 .action:active {
@@ -246,10 +380,60 @@ h1 {
 }
 
 .hint {
-  margin: 0;
-  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+  margin: 32px 0 0;
+  padding: 8px 10px 8px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--edge);
   color: var(--muted);
   font: 400 12px/1 var(--mono);
+  animation: rise 600ms var(--ease-out) 320ms backwards;
+}
+
+.hint-touch {
+  display: none;
+}
+
+.hint-arrow {
+  color: var(--sun);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.workspace[data-nudge] .hint-arrow {
+  animation: point 4.8s 1.4s infinite;
+}
+
+@keyframes point {
+  0% {
+    translate: 0;
+    animation-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
+  }
+  10% {
+    translate: 6px 0;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.3, 1);
+  }
+  20% {
+    translate: -1px 0;
+  }
+  30%,
+  100% {
+    translate: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
 }
 
 kbd {
@@ -272,9 +456,10 @@ kbd {
   list-style: none;
 }
 
+/* Dividers are dotted at the pixel level, like the rest of the dithering. */
 .jobs > li + li,
 .rows > li + li {
-  border-top: 1px solid var(--line);
+  background: repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 0 4px) 0 0 / 100% 1px no-repeat;
 }
 
 .job-head {
@@ -390,10 +575,10 @@ button.job-head {
 .job-highlights li::before {
   content: "";
   position: absolute;
-  top: 0.75em;
+  top: 0.6em;
   left: -20px;
-  width: 8px;
-  height: 1px;
+  width: 4px;
+  height: 4px;
   background: var(--accent);
 }
 
@@ -562,7 +747,15 @@ button.job-head {
   }
 
   .action-primary:hover {
-    background: #ff6d38;
+    background: var(--accent-hover);
+  }
+
+  .hero .action:not(.action-primary):hover {
+    background: var(--raised);
+  }
+
+  .window-photo:hover .photo canvas {
+    opacity: 0;
   }
 
   .rows:has(a.row:hover) a.row:not(:hover) {
@@ -579,7 +772,7 @@ button.job-head {
   }
 
   .workspace[data-overview] .window:hover {
-    outline-color: rgb(255 90 31 / 0.5);
+    outline-color: rgb(251 207 173 / 0.5);
   }
 }
 
@@ -590,17 +783,32 @@ button.job-head {
   }
 }
 
+@media (hover: none) {
+  .hint-touch {
+    display: inline;
+  }
+
+  .hint-pointer {
+    display: none;
+  }
+}
+
 @media (max-width: 760px) {
   :root {
     --gap: 10px;
+    --peek: 36px;
   }
 
   .column {
     width: calc(100vw - 3 * var(--gap) - 24px);
   }
 
+  .column-hero {
+    width: calc(100vw - 2 * var(--gap) - var(--peek));
+  }
+
   .hint {
-    display: none;
+    justify-self: start;
   }
 
   .job-head {
@@ -626,6 +834,17 @@ button.job-head {
 
   .window {
     animation-name: fade;
+  }
+
+  .hero-tag,
+  .hero-body,
+  .hint {
+    animation-name: fade;
+  }
+
+  .workspace[data-nudge] .strip,
+  .workspace[data-nudge] .hint-arrow {
+    animation: none;
   }
 
   @keyframes fade {

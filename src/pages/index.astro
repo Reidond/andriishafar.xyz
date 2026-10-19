@@ -1,6 +1,10 @@
 ---
+import { existsSync } from "node:fs";
 import Layout from "../layouts/Layout.astro";
 import resume from "../data/resume.json";
+
+// Drop a looping clip at public/wallpaper/sunset.mp4 (see scripts/animate-wallpaper.sh) and the wallpaper plays it.
+const wallpaperVideo = existsSync("public/wallpaper/sunset.mp4") ? "/wallpaper/sunset.mp4" : undefined;
 
 const { profile, experience, education, projects, publications, socialLinks } = resume;
 
@@ -25,19 +29,17 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
   title="Andrii Shafar — Software Engineer & Applied Researcher"
   description="Andrii Shafar is a software engineer and applied researcher in Ukraine, building product systems and studying fuzzy and neural models for decision support."
 >
+  <div class="wallpaper" aria-hidden="true" data-wallpaper data-video={wallpaperVideo}>
+    <canvas></canvas>
+  </div>
+
   <main class="workspace" data-workspace>
     <div class="strip" data-strip>
-      <div class="column" style="--frac: 0.3333" data-column>
-        <section class="window window-photo" aria-label="Photo" tabindex="-1" data-window>
-          <img src="/andrii-shafar.jpg" alt={profile.name} width="640" height="640" draggable="false" />
-        </section>
-      </div>
-
-      <div class="column" style="--frac: 0.5" data-column>
-        <section class="window window-hello" aria-label="Hello" tabindex="-1" data-window>
-          <span class="window-tag">~</span>
-          <div class="hello">
-            <h1>Andrii<br />Shafar</h1>
+      <div class="column column-hero" data-column>
+        <section class="hero" aria-label="Hello">
+          <span class="hero-tag">andriishafar.xyz</span>
+          <div class="hero-body">
+            <h1 data-shadow={"Andrii\nShafar"}>Andrii<br />Shafar</h1>
             <p class="lede">Software engineer and applied researcher, {profile.location}.</p>
             <div class="actions">
               <a class="action action-primary" href={`mailto:${profile.email}`}>Email</a>
@@ -45,7 +47,20 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
               <a class="action" href="/andrii-shafar-resume.pdf" download>Résumé</a>
             </div>
           </div>
-          <p class="hint" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> move · <kbd>O</kbd> overview</p>
+          <p class="hint" aria-hidden="true">
+            <span class="hint-touch">Swipe</span>
+            <span class="hint-pointer">Drag, scroll or <kbd>←</kbd> <kbd>→</kbd> · <kbd>O</kbd> overview</span>
+            <svg class="hint-arrow" viewBox="0 0 16 16" width="16" height="16"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+          </p>
+        </section>
+      </div>
+
+      <div class="column" style="--frac: 0.3333" data-column>
+        <section class="window window-photo" aria-label="Photo" tabindex="-1" data-window>
+          <div class="photo">
+            <img src="/andrii-shafar.jpg" alt={profile.name} width="640" height="640" draggable="false" data-photo />
+            <canvas aria-hidden="true" data-photo-dither></canvas>
+          </div>
         </section>
       </div>
 
@@ -158,12 +173,44 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
 </Layout>
 
 <script>
+  import { dither } from "../features/dither/dither";
+
+  // Sampled from the wallpaper, plus two deeper reds for the scrim behind the hero text.
+  const palette = ["#1c0101", "#4a0202", "#830202", "#a80308", "#c90e0f", "#e01c16", "#f33221", "#f95b3e", "#fa9a76", "#fbcfad"];
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Wallpaper: the still is dithered and animated in the shader until a video (if any) can play.
+  const wallpaper = document.querySelector<HTMLElement>("[data-wallpaper]")!;
+  const poster = new Image();
+  poster.src = "/wallpaper/sunset.webp";
+  const backdrop = dither(wallpaper.querySelector("canvas")!, poster, {
+    palette,
+    cell: 3,
+    focus: [0.75, 0.45],
+    scrim: 0.75,
+    scene: { horizon: 0.41, sun: [0.79, 0.34, 0.072] },
+  });
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+  if (backdrop && wallpaper.dataset.video && !reduceMotion.matches && !saveData) {
+    const video = document.createElement("video");
+    Object.assign(video, { muted: true, loop: true, playsInline: true, preload: "auto", src: wallpaper.dataset.video });
+    video.addEventListener("playing", () => backdrop.setSource(video), { once: true });
+    wallpaper.append(video);
+    video.play().catch(() => video.remove());
+  }
+
+  dither(document.querySelector<HTMLCanvasElement>("[data-photo-dither]")!, document.querySelector<HTMLImageElement>("[data-photo]")!, {
+    palette,
+    cell: 2,
+    focus: [0.5, 0.4],
+  });
+
   const workspace = document.querySelector<HTMLElement>("[data-workspace]")!;
   const strip = document.querySelector<HTMLElement>("[data-strip]")!;
   const columns = [...document.querySelectorAll<HTMLElement>("[data-column]")];
 
   let offset = 0;
-  let active = { column: 1, row: 0 };
+  let active = { column: 0, row: 0 };
   let overview = false;
 
   const gap = () => parseFloat(getComputedStyle(strip).gap) || 16;
@@ -182,6 +229,29 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
       strip.style.transform = `translateX(${-offset}px)`;
     }
     if (instant) requestAnimationFrame(() => strip.removeAttribute("data-instant"));
+  }
+
+  // Until the visitor moves the workspace, it nudges left now and then and springs back, to show it scrolls.
+  let nudging = !reduceMotion.matches;
+  workspace.toggleAttribute("data-nudge", nudging);
+
+  function stopNudge() {
+    if (!nudging) return;
+    nudging = false;
+    // Fold the in-flight nudge into the offset so the strip doesn't jump, then ease back unless the
+    // interaction that stopped it has already moved the strip somewhere else.
+    const base = offset;
+    const folded = offset - (parseFloat(getComputedStyle(strip).translate) || 0);
+    offset = folded;
+    workspace.removeAttribute("data-nudge");
+    apply(true);
+    getComputedStyle(strip).transform; // commit the folded position so easing back starts from it
+    requestAnimationFrame(() => {
+      if (offset !== folded || drag?.moving) return;
+      offset = base;
+      if (drag) drag.start = base;
+      apply();
+    });
   }
 
   // Scroll the minimum distance that brings the column fully into view, like niri.
@@ -244,6 +314,7 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
 
   document.addEventListener("keydown", (event) => {
     if (event.metaKey || event.ctrlKey || event.altKey) return;
+    stopNudge();
     const key = event.key.toLowerCase();
     if (key === "o") return setOverview(!overview);
     if (key === "escape" && overview) return setOverview(false);
@@ -284,15 +355,25 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
     }
   }
 
-  // Trackpad: two-finger horizontal swipe scrolls the strip 1:1.
+  // Trackpad: two-finger horizontal swipe scrolls the strip 1:1. A vertical wheel scrolls it too, except
+  // over content that scrolls on its own; notched mouse wheels step in big jumps, so those glide.
   let wheelIdle = 0;
   workspace.addEventListener(
     "wheel",
     (event) => {
-      if (overview || Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      if (overview) return;
+      let delta = event.deltaX;
+      let smooth = false;
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) {
+        const scroller = (event.target as Element).closest(".window-scroll, .contact");
+        if (scroller && scroller.scrollHeight > scroller.clientHeight) return;
+        delta = event.deltaY * (event.deltaMode === 1 ? 16 : 1);
+        smooth = Math.abs(delta) >= 50;
+      }
       event.preventDefault();
-      offset = clamp(offset + event.deltaX);
-      apply(true);
+      stopNudge();
+      offset = clamp(offset + delta);
+      apply(!smooth);
       clearTimeout(wheelIdle);
       wheelIdle = window.setTimeout(followView, 100);
     },
@@ -306,6 +387,7 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
   let glide = 0;
 
   workspace.addEventListener("pointerdown", (event) => {
+    stopNudge();
     if (overview || !event.isPrimary || event.button !== 0) return;
     cancelAnimationFrame(glide);
     const now = performance.now();
@@ -421,5 +503,7 @@ const githubUrl = socialLinks.find((link) => link.label === "GitHub")?.href;
     }, 1600);
   });
 
-  focus(1, 0, true);
+  workspace.addEventListener("focusin", stopNudge);
+
+  focus(0, 0, true);
 </script>
