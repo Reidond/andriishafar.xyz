@@ -865,6 +865,10 @@ button.job-head {
     transition-duration: 0ms;
   }
 
+  /* The dither dissolve flickers through four patterns, so skip the entrances entirely. */
+  .window,
+  .hero-top,
+  .hero-body,
   .workspace[data-nudge] .strip {
     animation: none;
   }
