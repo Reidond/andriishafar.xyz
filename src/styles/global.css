@@ -1,19 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --wall: #0a0a0a;
-  --surface: #141414;
-  --text: #f1eee8;
-  --muted: #a29d96;
-  --accent: #ff5a1f;
-  --line: rgb(255 255 255 / 0.08);
+  --wall: #1c0101;
+  --surface: #120404;
+  --raised: #1f0807;
+  --text: #ffe9d8;
+  --muted: #c0978d;
+  --accent: #f95b3e;
+  --accent-hover: #fa7a5a;
+  --sun: #fbcfad;
+  --line: rgb(255 214 196 / 0.16);
+  --shade: #0d0000;
   --gap: 16px;
-  --radius: 14px;
+  --peek: clamp(40px, 5vw, 96px);
+  --nudge: clamp(48px, 4.5vw, 76px);
+  /* Pixel-stepped corners instead of smooth radii. */
+  --corners: polygon(0 12px, 4px 12px, 4px 4px, 12px 4px, 12px 0, calc(100% - 12px) 0, calc(100% - 12px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 12px, 100% 12px, 100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%, 12px 100%, 12px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 12px), 0 calc(100% - 12px));
+  --corners-sm: polygon(0 6px, 2px 6px, 2px 2px, 6px 2px, 6px 0, calc(100% - 6px) 0, calc(100% - 6px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 6px, 100% 6px, 100% calc(100% - 6px), calc(100% - 2px) calc(100% - 6px), calc(100% - 2px) calc(100% - 2px), calc(100% - 6px) calc(100% - 2px), calc(100% - 6px) 100%, 6px 100%, 6px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 6px), 0 calc(100% - 6px));
   --ring: 3px;
   --ring-offset: 3px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-  --icon-ease: cubic-bezier(0.2, 0, 0, 1);
   --sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   color-scheme: dark;
@@ -34,19 +41,12 @@ body {
   color: var(--text);
   font: 400 16px/1.5 var(--sans);
   -webkit-font-smoothing: antialiased;
-  background-color: var(--wall);
-  background-image:
-    radial-gradient(120% 90% at 50% 0%, transparent 40%, rgb(0 0 0 / 0.6)),
-    linear-gradient(rgb(255 90 31 / 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 90 31 / 0.07) 1px, transparent 1px),
-    linear-gradient(rgb(255 90 31 / 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 90 31 / 0.035) 1px, transparent 1px);
-  background-size: auto, 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background: var(--wall);
 }
 
 ::selection {
   background: var(--accent);
-  color: #0a0a0a;
+  color: var(--wall);
 }
 
 a {
@@ -55,9 +55,8 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--sun);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 .sr-only {
@@ -69,11 +68,51 @@ a {
   white-space: nowrap;
 }
 
+/* Wallpaper: the CSS image shows until the dithered canvas has drawn its first frame. */
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(20deg, rgb(28 1 1 / 0.8), transparent 60%),
+    url("/wallpaper/sunset.webp") 0 45% / max(72vw, 100vh) no-repeat var(--wall);
+  image-rendering: pixelated;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .wallpaper {
+    background-position: 0 0, 75% 45%;
+  }
+}
+
+.wallpaper canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.wallpaper canvas[data-ready] {
+  opacity: 1;
+}
+
+.wallpaper video {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Workspace and scrolling strip */
+/* clip, not hidden: a hidden box can still be scrolled by focus and scrollIntoView, which would shift the strip
+   on top of its own transform. */
 .workspace {
   position: relative;
   height: 100%;
-  overflow: hidden;
+  overflow: clip;
   touch-action: pan-y;
 }
 
@@ -100,6 +139,37 @@ a {
   transition-duration: 0ms;
 }
 
+/* Until the first interaction the strip tugs toward the next column and springs back. */
+.workspace[data-nudge] .strip {
+  animation: nudge 4.8s 1.4s infinite;
+}
+
+@keyframes nudge {
+  0% {
+    translate: 0;
+    animation-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
+  }
+  10% {
+    translate: calc(-1 * var(--nudge)) 0;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.3, 1);
+  }
+  20% {
+    translate: calc(0.16 * var(--nudge)) 0;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+  }
+  27% {
+    translate: calc(-0.06 * var(--nudge)) 0;
+    animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+  }
+  33% {
+    translate: 1px 0;
+  }
+  38%,
+  100% {
+    translate: 0;
+  }
+}
+
 .column {
   flex: none;
   display: flex;
@@ -115,41 +185,61 @@ a {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.07),
-    0 1px 2px rgb(0 0 0 / 0.4),
-    0 12px 32px -12px rgb(0 0 0 / 0.7);
   outline: var(--ring) solid transparent;
   outline-offset: var(--ring-offset);
   transition-property: outline-color;
   transition-duration: 150ms;
-  animation: open 420ms var(--ease-out) backwards;
+  animation: open 360ms linear backwards;
+}
+
+/* The surface, lit from the top with a dithered glow, and a hard 50% dithered drop shadow sit behind every
+   window's content. */
+.window::before,
+.window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: var(--corners);
+  pointer-events: none;
+}
+
+.window::before {
+  z-index: -1;
+  background: url("/dither/glow.svg") repeat-x 0 0, var(--surface);
+}
+
+.window::after {
+  z-index: -2;
+  translate: 8px 8px;
+  background: repeating-conic-gradient(var(--shade) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
 }
 
 .window[data-active] {
-  outline-color: var(--accent);
+  outline-color: var(--sun);
 }
 
 .window:focus-visible {
-  outline-color: var(--accent);
+  outline-color: var(--sun);
 }
 
 .column:nth-child(2) .window {
-  animation-delay: 70ms;
+  animation-delay: 160ms;
 }
 
 .column:nth-child(3) .window {
-  animation-delay: 140ms;
+  animation-delay: 230ms;
 }
 
 .column:nth-child(4) .window {
-  animation-delay: 210ms;
+  animation-delay: 300ms;
 }
 
 .column:nth-child(5) .window {
-  animation-delay: 280ms;
+  animation-delay: 370ms;
+}
+
+.column:nth-child(6) .window {
+  animation-delay: 440ms;
 }
 
 .window-tag {
@@ -171,45 +261,155 @@ a {
   scrollbar-color: rgb(255 255 255 / 0.18) transparent;
 }
 
-/* Photo */
-.window-photo {
+/* Photo: dithered like the wallpaper; the real photo shows through on hover. */
+.photo {
+  position: relative;
+  flex: 1;
   overflow: hidden;
+  clip-path: var(--corners);
+  background: var(--surface);
 }
 
-.window-photo img {
+.photo img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 40%;
-  border-radius: var(--radius);
   user-select: none;
 }
 
-
-/* Hello */
-.window-hello {
-  justify-content: space-between;
-  padding: 24px;
+.photo canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 300ms ease;
 }
 
-.hello {
-  margin: auto 0;
-  padding: 24px 8px 0;
+.photo canvas[data-ready] {
+  opacity: 1;
+}
+
+/* Hero: sits straight on the wallpaper next to the photo, with the work window peeking in from the right. */
+.column-hero {
+  --photo: calc(0.3333 * (100vw - var(--gap)) - var(--gap));
+  width: calc(100vw - 3 * var(--gap) - var(--photo) - var(--peek));
+}
+
+.hero {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  padding: clamp(12px, 2vw, 24px) clamp(20px, 3.5vw, 48px) clamp(20px, 3.5vw, 48px);
+}
+
+.hero-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  animation: open 360ms linear 220ms backwards;
+}
+
+/* Chips are small windows: a dithered, pixel-cornered surface with a hard dithered shadow. */
+.chip {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  margin: 0;
+  padding: 0 10px;
+  border: 0;
+  background: none;
+  color: var(--sun);
+  font: 400 12px/1 var(--mono);
+}
+
+.chip::before,
+.chip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: var(--corners-sm);
+  pointer-events: none;
+}
+
+.chip::before {
+  z-index: -1;
+  background: url("/dither/glow-sm.svg") repeat-x 0 0, var(--surface);
+  transition: background-color 120ms ease;
+}
+
+.chip::after {
+  z-index: -2;
+  translate: 4px 4px;
+  background: repeating-conic-gradient(var(--shade) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+}
+
+.chip-button {
+  padding-right: 8px;
+  color: var(--text);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chip-button .pixel {
+  color: var(--accent);
+}
+
+/* Pressing sinks the button onto its shadow. */
+.chip-button:active {
+  translate: 2px 2px;
+}
+
+.chip-button:active::after {
+  translate: 2px 2px;
+}
+
+.chip-button[aria-pressed="true"]::before {
+  background-color: var(--raised);
+}
+
+.hero-body {
+  align-self: end;
+  animation: open 360ms linear 80ms backwards;
 }
 
 h1 {
+  position: relative;
+  isolation: isolate;
   margin: 0;
-  color: var(--accent);
-  font-size: clamp(56px, 7.4vw, 128px);
+  color: var(--text);
+  font-size: clamp(60px, 9vw, 164px);
   font-weight: 500;
-  line-height: 0.88;
+  line-height: 0.86;
   letter-spacing: -0.055em;
 }
 
+/* A hard dithered shadow: the same text, filled with a 1-in-2 checkerboard. */
+h1::before {
+  content: attr(data-shadow);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  white-space: pre-line;
+  translate: max(4px, 0.05em) max(4px, 0.05em);
+  color: transparent;
+  background: repeating-conic-gradient(var(--shade) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 .lede {
-  max-width: 26ch;
-  margin: 24px 0 0;
-  font-size: clamp(18px, 1.5vw, 22px);
+  max-width: 30ch;
+  margin: 28px 0 0;
+  font-size: clamp(18px, 1.6vw, 24px);
   line-height: 1.4;
   text-wrap: balance;
 }
@@ -227,8 +427,8 @@ h1 {
   justify-content: center;
   height: 40px;
   padding: 0 16px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.07);
+  background: url("/dither/glow-sm.svg") repeat-x 0 0, var(--surface);
+  clip-path: var(--corners-sm);
   font-size: 15px;
   font-weight: 500;
   transition-property: background-color, transform;
@@ -237,29 +437,38 @@ h1 {
 }
 
 .action-primary {
-  background: var(--accent);
-  color: #0a0a0a;
+  background: url("/dither/shade-sm.svg") repeat-x 0 100%, var(--accent);
+  color: var(--wall);
 }
 
 .action:active {
   transform: scale(0.96);
 }
 
+/* Clipped controls can't show an outline, so they ring themselves from the inside. */
+.action:focus-visible,
+.email:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--sun);
+}
+
 .hint {
-  margin: 0;
-  padding: 0 8px;
   color: var(--muted);
-  font: 400 12px/1 var(--mono);
+}
+
+.hint-touch {
+  display: none;
 }
 
 kbd {
   display: inline-grid;
   place-items: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 4px;
-  border-radius: 5px;
-  background: rgb(255 255 255 / 0.08);
+  min-width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  padding: 0 3px;
+  background: var(--raised);
+  clip-path: var(--corners-sm);
   color: var(--text);
   font: inherit;
 }
@@ -272,9 +481,10 @@ kbd {
   list-style: none;
 }
 
+/* Dividers are dotted at the pixel level, like the rest of the dithering. */
 .jobs > li + li,
 .rows > li + li {
-  border-top: 1px solid var(--line);
+  background: repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 0 4px) 0 0 / 100% 1px no-repeat;
 }
 
 .job-head {
@@ -315,26 +525,30 @@ button.job-head {
   white-space: nowrap;
 }
 
-.job-icon,
-.row-arrow,
-.email-icon svg {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* Icons are drawn on a grid of 2px cells. */
+.pixel {
+  fill: currentColor;
+  shape-rendering: crispEdges;
 }
 
 .job-icon {
   color: var(--text);
-  transition-property: transform, color;
-  transition-duration: 200ms, 120ms;
-  transition-timing-function: var(--ease-out), ease;
+  transition-property: color;
+  transition-duration: 120ms;
+}
+
+.job-icon-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: scale 180ms steps(3, end);
 }
 
 .job-head[aria-expanded="true"] .job-icon {
   color: var(--accent);
-  transform: rotate(45deg);
+}
+
+.job-head[aria-expanded="true"] .job-icon-bar {
+  scale: 1 0;
 }
 
 .job-summary {
@@ -390,10 +604,10 @@ button.job-head {
 .job-highlights li::before {
   content: "";
   position: absolute;
-  top: 0.75em;
+  top: 0.6em;
   left: -20px;
-  width: 8px;
-  height: 1px;
+  width: 4px;
+  height: 4px;
   background: var(--accent);
 }
 
@@ -478,7 +692,7 @@ button.job-head {
   margin: 0 -12px 8px;
   padding: 0 12px;
   border: 0;
-  border-radius: 10px;
+  clip-path: var(--corners-sm);
   background: none;
   color: var(--text);
   font: 500 clamp(18px, 1.6vw, 22px) / 1.2 var(--sans);
@@ -508,22 +722,20 @@ button.job-head {
   inset: 0;
   width: 18px;
   height: 18px;
-  transition-property: opacity, scale, filter;
+  transition-property: opacity, scale;
   transition-duration: 200ms;
-  transition-timing-function: var(--icon-ease);
+  transition-timing-function: steps(3, end);
 }
 
 .icon-check,
 .email[data-copied] .icon-copy {
   opacity: 0;
-  scale: 0.25;
-  filter: blur(4px);
+  scale: 0.5;
 }
 
 .email[data-copied] .icon-check {
   opacity: 1;
   scale: 1;
-  filter: blur(0);
   color: var(--accent);
 }
 
@@ -536,7 +748,6 @@ button.job-head {
   width: 100%;
   height: 48px;
   margin-top: auto;
-  border-radius: calc(var(--radius) - 4px);
 }
 
 .window-contact .rows {
@@ -558,11 +769,19 @@ button.job-head {
 
 @media (hover: hover) and (pointer: fine) {
   .action:hover {
-    background: rgb(255 255 255 / 0.12);
+    background-color: var(--raised);
   }
 
   .action-primary:hover {
-    background: #ff6d38;
+    background-color: var(--accent-hover);
+  }
+
+  .chip-button:hover::before {
+    background-color: var(--raised);
+  }
+
+  .window-photo:hover .photo canvas {
+    opacity: 0;
   }
 
   .rows:has(a.row:hover) a.row:not(:hover) {
@@ -575,32 +794,55 @@ button.job-head {
   }
 
   .email:hover {
-    background: rgb(255 255 255 / 0.05);
+    background: repeating-conic-gradient(var(--raised) 0 25%, transparent 0 50%) 0 0 / 4px 4px;
   }
 
   .workspace[data-overview] .window:hover {
-    outline-color: rgb(255 90 31 / 0.5);
+    outline-color: rgb(251 207 173 / 0.5);
   }
 }
 
+/* Windows dissolve in through dither densities: none, 1/4, 1/2, 3/4, solid. */
 @keyframes open {
-  from {
-    opacity: 0;
-    scale: 0.96;
+  0% {
+    mask: linear-gradient(transparent, transparent);
+  }
+  25% {
+    mask: conic-gradient(#000 0 25%, transparent 0) 0 0 / 4px 4px;
+  }
+  50% {
+    mask: repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0 / 4px 4px;
+  }
+  75% {
+    mask: conic-gradient(transparent 0 25%, #000 0) 0 0 / 4px 4px;
+  }
+  100% {
+    mask: none;
+  }
+}
+
+@media (hover: none) {
+  .hint-touch {
+    display: inline;
+  }
+
+  .hint-pointer {
+    display: none;
   }
 }
 
 @media (max-width: 760px) {
   :root {
     --gap: 10px;
+    --peek: 36px;
   }
 
   .column {
     width: calc(100vw - 3 * var(--gap) - 24px);
   }
 
-  .hint {
-    display: none;
+  .column-hero {
+    width: calc(100vw - 2 * var(--gap) - var(--peek));
   }
 
   .job-head {
@@ -619,19 +861,16 @@ button.job-head {
 
 @media (prefers-reduced-motion: reduce) {
   .strip,
-  .job-more,
-  .job-icon {
+  .job-more {
     transition-duration: 0ms;
   }
 
-  .window {
-    animation-name: fade;
-  }
-
-  @keyframes fade {
-    from {
-      opacity: 0;
-    }
+  /* The dither dissolve flickers through four patterns, so skip the entrances entirely. */
+  .window,
+  .hero-top,
+  .hero-body,
+  .workspace[data-nudge] .strip {
+    animation: none;
   }
 }
 
